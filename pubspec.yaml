@@ -1,8 +1,8 @@
-name: roc
+name: musket
 description: Custom flutter development package by Roc Penn.
 version: 0.0.1
-author:
-homepage:
+author: Roc Penn
+homepage: https://github.com/zhpoo/roc
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -10,6 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.15.8
+  dio: ^3.0.0
+  device_info: ^0.4.1+1
+  package_info: ^0.4.0+10
+  fluttertoast: ^3.1.3
+  webview_flutter: ^0.3.15+1
 
 dev_dependencies:
   flutter_test:
@@ -21,10 +29,14 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
+  uses-material-design: true
+
   # To add assets to your package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+#  assets:
+#    - images/
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages
