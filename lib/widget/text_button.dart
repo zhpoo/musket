@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:musket/common/defaults.dart';
 
 class TextButton extends StatelessWidget {
   static TextStyle defaultStyle = TextStyle();
@@ -19,7 +18,7 @@ class TextButton extends StatelessWidget {
     this.onPress,
     this.alignment,
     this.backgroundColor = Colors.white,
-    this.padding = const EdgeInsets.all(Defaults.commonMargin),
+    this.padding,
     double fontSize = 14.0,
   }) : this.style = style ?? defaultStyle.copyWith(fontSize: fontSize, color: color);
 

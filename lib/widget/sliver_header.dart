@@ -109,6 +109,10 @@ class SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    Widget child = Material(
+      child: this.child,
+      elevation: overlapsContent ? 4.0 : 0,
+    );
     return Stack(children: <Widget>[
       Positioned(
         key: childKey,
