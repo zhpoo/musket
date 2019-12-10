@@ -10,4 +10,6 @@ class Defaults {
   static const double dividerHeight = 0.5;
 
   static const Color borderColor = Colors.grey;
+
+  static const Color primaryText = Color(0xFF131314);
 }

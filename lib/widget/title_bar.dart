@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:musket/common/defaults.dart';
 
 class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   static double defaultHeight = 46.0;
+  static TextStyle defaultTitleStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18.0,
+    color: Defaults.primaryText,
+  );
 
   final double height;
   final Widget left;
@@ -21,6 +27,17 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.height,
     this.bottom,
   }) : preferredSize = _preferredSize(height, bottom);
+
+  TitleBar.text({
+    String text,
+    TextStyle style,
+    this.centerTitle = true,
+    this.left,
+    this.right,
+    this.height,
+    this.bottom,
+  })  : title = Text(text, style: style ?? defaultTitleStyle),
+        preferredSize = _preferredSize(height, bottom);
 
   /// 带返回按钮的 [TitleBar]
   /// [right]和[rightWidgets]如果同时提供，[right]会添加到[rightWidgets]最后

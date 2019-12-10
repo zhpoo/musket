@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class NoRecord extends StatelessWidget {
   static String defaultText = 'No Record';
-  static TextStyle defaultStyle = TextStyle();
+  static TextStyle defaultStyle = TextStyle(inherit: false);
 
   final String text;
   final TextStyle style;
 
-  NoRecord(String text, TextStyle style)
+  NoRecord({String text, TextStyle style})
       : this.text = text ?? defaultText,
         this.style = style ?? defaultStyle;
 
