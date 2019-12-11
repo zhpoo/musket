@@ -5,7 +5,7 @@ class Button extends StatelessWidget {
   static TextStyle defaultStyle = const TextStyle(color: Colors.white);
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback onTap;
   final TextStyle textStyle;
   final Color color;
   final double radius;
@@ -17,10 +17,13 @@ class Button extends StatelessWidget {
   final double disabledElevation;
   final EdgeInsetsGeometry margin;
   final EdgeInsetsGeometry padding;
+  final BoxConstraints constraints;
+  final AlignmentGeometry alignment;
 
-  Button(
-    this.text,
-    this.onPressed, {
+  const Button({
+    Key key,
+    @required this.text,
+    @required this.onTap,
     this.textStyle,
     this.color: Colors.blueAccent,
     this.radius: 24.0,
@@ -30,15 +33,18 @@ class Button extends StatelessWidget {
     this.highlightElevation: 0.0,
     this.hoverElevation: 0.0,
     this.disabledElevation: 0.0,
-    this.margin: const EdgeInsets.only(top: 16.0),
-    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
-  });
+    this.margin,
+    this.padding,
+    this.constraints,
+    this.alignment,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
       margin: margin,
+      padding: padding,
+      alignment: alignment,
       child: RaisedButton(
         color: color,
         focusElevation: focusElevation,
@@ -46,11 +52,12 @@ class Button extends StatelessWidget {
         disabledElevation: disabledElevation,
         hoverElevation: hoverElevation,
         elevation: elevation,
-        onPressed: onPressed,
+        onPressed: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
         child: Container(
           alignment: Alignment.center,
           height: height,
+          constraints: constraints,
           child: Text(text, style: textStyle ?? defaultStyle),
         ),
       ),

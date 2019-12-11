@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:musket/musket.dart';
 
 /// 公共工具方法
 
@@ -51,4 +52,20 @@ String durationToString(Duration duration) {
   String twoDigitMinutes = toDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
   String twoDigitSeconds = toDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
   return '$twoDigitsHours:$twoDigitMinutes:$twoDigitSeconds';
+}
+
+String formatString(String fmt, List args) {
+  return sprintf.call(fmt, args);
+}
+
+void clearFocus(BuildContext context) {
+  FocusScope.of(context).requestFocus(FocusNode());
+}
+
+Widget wrapClearFocus(BuildContext context, {Widget child}) {
+  return GestureDetector(
+    behavior: HitTestBehavior.translucent,
+    onTap: () => clearFocus(context),
+    child: child,
+  );
 }

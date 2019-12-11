@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:musket/widget/loading_indicator.dart';
 
 class Dialogs {
   Dialogs._();
@@ -55,32 +56,14 @@ class Dialogs {
 
   static Future<T> showLoading<T>(
     BuildContext context, {
-    String text,
-    double indicatorRadius: 18.0,
-    double minWidth: 124,
-    double minHeight: 114,
-    double fontSize: 14,
-    Color textColor: Colors.white,
-    Color color: const Color(0xB3000000),
+    Widget indicator: const LoadingIndicator(),
+    bool cancelable: false,
   }) {
-    Widget indicator(BuildContext context) {
-      var children = <Widget>[CupertinoActivityIndicator(radius: indicatorRadius)];
-      if (text != null) {
-        children.add(Container(
-          margin: EdgeInsets.only(top: 16.0),
-          child: Text(text, style: TextStyle(fontSize: fontSize, color: textColor, inherit: false)),
-        ));
-      }
-      return Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-        constraints: BoxConstraints(minWidth: minWidth, minHeight: minHeight),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: children),
-      );
-    }
-
-    return show(context: context, builder: indicator, cancelable: false, barrierColor: null);
+    return show(
+      context: context,
+      builder: (context) => indicator,
+      cancelable: cancelable,
+      barrierColor: null,
+    );
   }
 }

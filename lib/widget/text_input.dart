@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final TextStyle _defaultLabelStyle = TextStyle(/*color: AppColors.primaryText, */ fontSize: 14);
-const TextStyle _kDefaultHintStyle = TextStyle(/*color: AppColors.tertiaryText, */ fontSize: 20);
-const InputBorder _kDefaultBorder =
-    const UnderlineInputBorder(borderSide: BorderSide(/*color: AppColors.divider*/));
-
 /// 上方带 label 的 [TextField]
 /// [prefixText] 与 [prefix] 同时提供时仅 [prefixText] 生效
 /// [suffixText] 与 [suffix] 同时提供时仅 [suffixText] 生效
 class TextInputWidget extends StatelessWidget {
+  static TextStyle defaultStyle = const TextStyle(fontSize: 14);
+  static TextStyle defaultLabelStyle = const TextStyle(fontSize: 14);
+  static TextStyle defaultHintStyle = const TextStyle(fontSize: 14);
+  static const InputBorder _defaultBorder = const UnderlineInputBorder();
+
   final String label;
   final String hint;
+  final TextStyle style;
   final TextStyle labelStyle;
   final TextStyle hintStyle;
   final InputBorder border;
@@ -20,6 +21,7 @@ class TextInputWidget extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool obscureText;
+  final bool autoFocus;
   final Widget prefix;
   final Widget prefixIcon;
   final String prefixText;
@@ -39,13 +41,15 @@ class TextInputWidget extends StatelessWidget {
     this.label = '',
     this.hint,
     this.controller,
+    this.style,
     this.labelStyle,
-    this.hintStyle = _kDefaultHintStyle,
-    this.border = _kDefaultBorder,
+    this.hintStyle,
+    this.border = _defaultBorder,
     this.margin,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 4),
     this.keyboardType,
     this.obscureText = false,
+    this.autoFocus = false,
     this.prefix,
     this.prefixIcon,
     this.prefixText,
@@ -56,13 +60,15 @@ class TextInputWidget extends StatelessWidget {
     this.suffixStyle,
     this.enabled = true,
     this.color,
-    this.maxLines,
+    this.maxLines: 1,
     this.inputFormatters,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var labelStyle = this.labelStyle ?? _defaultLabelStyle;
+    var style = this.style ?? defaultStyle;
+    var labelStyle = this.labelStyle ?? defaultLabelStyle;
+    var hintStyle = this.hintStyle ?? defaultHintStyle;
     bool hasPrefixOrSuffix =
         prefix != null || prefixText != null || suffixText != null || suffix != null;
 
@@ -115,6 +121,8 @@ class TextInputWidget extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(splashColor: Colors.transparent),
         child: TextField(
+          autofocus: autoFocus,
+          style: style,
           maxLines: maxLines,
           enabled: enabled,
           obscureText: obscureText,
@@ -123,6 +131,8 @@ class TextInputWidget extends StatelessWidget {
           inputFormatters: inputFormatters,
           decoration: decoration,
           controller: controller,
+          cursorWidth: 1.5,
+          cursorRadius: Radius.circular(1.5),
         ),
       ),
     ));
@@ -136,8 +146,14 @@ class TextInputWidget extends StatelessWidget {
       inputRowChildren.add(suffixIcon);
     }
 
-    columnChildren.add(Row(children: inputRowChildren));
-    var column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: columnChildren);
+    columnChildren.add(Row(
+      children: inputRowChildren,
+    ));
+    var column = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: columnChildren,
+    );
     Decoration mainDecoration;
     if (hasPrefixOrSuffix) {
       if (border is UnderlineInputBorder) {

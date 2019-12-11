@@ -4,6 +4,7 @@ import 'package:musket/common/defaults.dart';
 
 class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   static double defaultHeight = 46.0;
+  static String backAsset;
   static TextStyle defaultTitleStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 18.0,
@@ -16,12 +17,14 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final PreferredSizeWidget bottom;
   final bool centerTitle;
+  final bool automaticallyImplyLeading;
   @override
   final Size preferredSize;
 
   TitleBar({
     this.title,
     this.centerTitle = true,
+    this.automaticallyImplyLeading = false,
     this.left,
     this.right,
     this.height,
@@ -32,6 +35,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     String text,
     TextStyle style,
     this.centerTitle = true,
+    this.automaticallyImplyLeading = false,
     this.left,
     this.right,
     this.height,
@@ -48,12 +52,14 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     VoidCallback onPressBack,
     PreferredSizeWidget bottom,
     Widget right,
+    double backSize: 36,
     List<Widget> rightWidgets,
     this.height,
     Size preferredSize,
-  })  : this.title = Text(title, style: tittleStyle),
+  })  : this.title = Text(title, style: tittleStyle ?? defaultTitleStyle),
         this.bottom = bottom,
         this.centerTitle = true,
+        this.automaticallyImplyLeading = false,
         this.right = (() {
           if (right != null) {
             rightWidgets ??= <Widget>[];
@@ -63,13 +69,16 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
         }()),
         this.left = GestureDetector(
           onTap: onPressBack ?? () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back_ios, size: 36),
+          child: backAsset == null
+              ? Icon(Icons.arrow_back_ios, size: backSize)
+              : Image.asset(backAsset, width: backSize, height: backSize),
         ),
         preferredSize = _preferredSize(height, bottom);
 
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
+      automaticallyImplyLeading: automaticallyImplyLeading,
       leading: left,
       title: title,
       centerTitle: centerTitle,

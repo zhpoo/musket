@@ -7,6 +7,7 @@ class TextButton extends StatelessWidget {
   final Color color;
   final Color backgroundColor;
   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry margin;
   final VoidCallback onPress;
   final TextStyle style;
   final AlignmentGeometry alignment;
@@ -19,6 +20,7 @@ class TextButton extends StatelessWidget {
     this.alignment,
     this.backgroundColor = Colors.white,
     this.padding,
+    this.margin,
     double fontSize = 14.0,
   }) : this.style = style ?? defaultStyle.copyWith(fontSize: fontSize, color: color);
 
@@ -29,6 +31,7 @@ class TextButton extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: Container(
         alignment: alignment,
+        margin: margin,
         padding: padding,
         color: backgroundColor,
         child: Text(text, style: style),
