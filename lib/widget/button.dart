@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// 蓝底白字圆角按钮
 class Button extends StatelessWidget {
   static TextStyle defaultStyle = const TextStyle(color: Colors.white);
+  static Color defaultColor = Colors.blueAccent;
 
   final String text;
   final VoidCallback onTap;
@@ -25,7 +26,7 @@ class Button extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     this.textStyle,
-    this.color: Colors.blueAccent,
+    this.color,
     this.radius: 24.0,
     this.height: 48.0,
     this.elevation: 0.0,
@@ -46,7 +47,7 @@ class Button extends StatelessWidget {
       padding: padding,
       alignment: alignment,
       child: RaisedButton(
-        color: color,
+        color: color ?? defaultColor,
         focusElevation: focusElevation,
         highlightElevation: highlightElevation,
         disabledElevation: disabledElevation,

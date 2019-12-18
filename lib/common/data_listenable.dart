@@ -14,11 +14,12 @@ mixin DataListenable<Function> {
   }
 
   void removeDataListener(Function listener) {
-    _dataListeners.remove(listener);
+    _dataListeners?.remove(listener);
   }
 
   @protected
   void notifyDataListeners(Consumer<Function> consumer) {
+    if (_dataListeners?.isEmpty ?? true) return;
     for (int i = _dataListeners.length - 1; i >= 0; i--) {
       consumer(_dataListeners.elementAt(i));
     }

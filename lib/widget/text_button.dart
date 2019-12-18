@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextButton extends StatelessWidget {
-  static TextStyle defaultStyle = TextStyle();
+  static TextStyle defaultStyle = const TextStyle();
 
   final String text;
   final Color color;
@@ -17,7 +17,7 @@ class TextButton extends StatelessWidget {
     TextStyle style,
     this.color,
     this.onPress,
-    this.alignment,
+    this.alignment = Alignment.center,
     this.backgroundColor = Colors.white,
     this.padding,
     this.margin,

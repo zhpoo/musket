@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:musket/common/logger.dart';
 
 /// 扩展 [SliverPersistentHeader]，支持 [snap] 属性，仿 [SliverAppBar].
 /// 若[maxHeight]未指定，则会自动测量[child]高度作为[maxHeight]
@@ -94,7 +93,6 @@ class _SliverHeaderState extends State<SliverHeader> with TickerProviderStateMix
     RenderBox renderBox = sliverHeaderKey.currentContext.findRenderObject();
     setState(() {
       childHeight = renderBox.size.height;
-      Logger.log('childHeight : $childHeight ');
     });
   }
 }
@@ -182,9 +180,7 @@ class _FloatingWidgetState extends State<FloatingWidget> {
   }
 
   RenderSliverFloatingPersistentHeader _headerRenderer() {
-    return context.ancestorRenderObjectOfType(
-      const TypeMatcher<RenderSliverFloatingPersistentHeader>(),
-    );
+    return context.findAncestorRenderObjectOfType<RenderSliverFloatingPersistentHeader>();
   }
 
   void _isScrollingListener() {

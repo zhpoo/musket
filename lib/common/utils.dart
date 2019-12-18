@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:musket/musket.dart';
 
@@ -28,6 +29,9 @@ bool isSameDay(dynamic day1, dynamic day2) {
 
 String parseTime(BuildContext context, int time, String languageCode,
     {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
+  if (time == null) {
+    return '';
+  }
   if ('$time'.length == 10) {
     time *= 1000;
   }
@@ -68,4 +72,14 @@ Widget wrapClearFocus(BuildContext context, {Widget child}) {
     onTap: () => clearFocus(context),
     child: child,
   );
+}
+
+void runOnNextFrame(VoidCallback callback) {
+  SchedulerBinding.instance.addPostFrameCallback((_) => callback());
+}
+
+List<T> map<E, T>(List<E> src, T indexMapper(E e, int index)) {
+  List<T> result = <T>[];
+  src?.forEach((e) => result.add(indexMapper(e, result.length)));
+  return result;
 }

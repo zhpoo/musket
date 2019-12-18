@@ -8,8 +8,9 @@ class TextInputWidget extends StatelessWidget {
   static TextStyle defaultStyle = const TextStyle(fontSize: 14);
   static TextStyle defaultLabelStyle = const TextStyle(fontSize: 14);
   static TextStyle defaultHintStyle = const TextStyle(fontSize: 14);
-  static const InputBorder _defaultBorder = const UnderlineInputBorder();
+  static InputBorder defaultBorder = const UnderlineInputBorder();
 
+  final double height;
   final String label;
   final String hint;
   final TextStyle style;
@@ -38,13 +39,14 @@ class TextInputWidget extends StatelessWidget {
 
   const TextInputWidget({
     Key key,
+    this.height,
     this.label = '',
     this.hint,
     this.controller,
     this.style,
     this.labelStyle,
     this.hintStyle,
-    this.border = _defaultBorder,
+    this.border,
     this.margin,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 4),
     this.keyboardType,
@@ -66,6 +68,7 @@ class TextInputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var border = this.border ?? defaultBorder;
     var style = this.style ?? defaultStyle;
     var labelStyle = this.labelStyle ?? defaultLabelStyle;
     var hintStyle = this.hintStyle ?? defaultHintStyle;
@@ -120,19 +123,22 @@ class TextInputWidget extends StatelessWidget {
     inputRowChildren.add(Expanded(
       child: Theme(
         data: Theme.of(context).copyWith(splashColor: Colors.transparent),
-        child: TextField(
-          autofocus: autoFocus,
-          style: style,
-          maxLines: maxLines,
-          enabled: enabled,
-          obscureText: obscureText,
-          textAlign: TextAlign.left,
-          keyboardType: keyboardType,
-          inputFormatters: inputFormatters,
-          decoration: decoration,
-          controller: controller,
-          cursorWidth: 1.5,
-          cursorRadius: Radius.circular(1.5),
+        child: Container(
+          height: height,
+          child: TextField(
+            autofocus: autoFocus,
+            style: style,
+            maxLines: maxLines,
+            enabled: enabled,
+            obscureText: obscureText,
+            textAlign: TextAlign.left,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            decoration: decoration,
+            controller: controller,
+            cursorWidth: 1.5,
+            cursorRadius: Radius.circular(1.5),
+          ),
         ),
       ),
     ));
@@ -146,10 +152,9 @@ class TextInputWidget extends StatelessWidget {
       inputRowChildren.add(suffixIcon);
     }
 
-    columnChildren.add(Row(
-      children: inputRowChildren,
-    ));
+    columnChildren.add(Row(children: inputRowChildren));
     var column = Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: columnChildren,
@@ -162,7 +167,13 @@ class TextInputWidget extends StatelessWidget {
         mainDecoration = BoxDecoration(border: Border.fromBorderSide(border.borderSide));
       }
     }
-    return Container(decoration: mainDecoration, margin: margin, child: column, color: color);
+    return Container(
+      decoration: mainDecoration,
+      margin: margin,
+      child: column,
+      color: color,
+      alignment: Alignment.center,
+    );
   }
 }
 

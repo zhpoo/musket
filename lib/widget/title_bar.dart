@@ -55,7 +55,6 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     double backSize: 36,
     List<Widget> rightWidgets,
     this.height,
-    Size preferredSize,
   })  : this.title = Text(title, style: tittleStyle ?? defaultTitleStyle),
         this.bottom = bottom,
         this.centerTitle = true,
@@ -86,7 +85,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       bottom: bottom,
     );
-    return PreferredSize(child: appBar, preferredSize: preferredSize);
+    return appBar;
   }
 
   static Size _preferredSize(double height, PreferredSizeWidget bottom) {

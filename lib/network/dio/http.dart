@@ -50,6 +50,7 @@ class Http {
   }
 
   Http asFormData() {
+    method = Method.post; // form-data must use post method.
     addHeader(Headers.contentTypeHeader, contentTypeFormData);
     return this;
   }
@@ -68,7 +69,7 @@ class Http {
   }
 
   Http addParams(Map<String, dynamic> params) {
-    params.forEach((key, value) => addParam(key, value));
+    params.forEach(addParam);
     return this;
   }
 
@@ -76,7 +77,6 @@ class Http {
   Future<ResultData> call<T>() async {
     var data;
     if (_files.isNotEmpty) {
-      method = Method.post; // form-data must use post method.
       asFormData();
       await _createMultipartFiles();
     }
