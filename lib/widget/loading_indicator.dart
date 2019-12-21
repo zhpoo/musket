@@ -10,6 +10,7 @@ class LoadingIndicator extends StatelessWidget {
   final textColor;
   final double indicatorSize;
   final double containerRadius;
+  final Brightness brightness;
 
   final EdgeInsetsGeometry margin;
 
@@ -24,11 +25,17 @@ class LoadingIndicator extends StatelessWidget {
     this.indicatorSize: 18.0,
     this.containerRadius: 8.0,
     this.margin,
+    this.brightness: Brightness.dark,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var children = <Widget>[CupertinoActivityIndicator(radius: indicatorSize)];
+    var children = <Widget>[
+      CupertinoTheme(
+        child: CupertinoActivityIndicator(radius: indicatorSize),
+        data: CupertinoTheme.of(context).copyWith(brightness: brightness),
+      ),
+    ];
     if (text != null) {
       children.add(Container(
         margin: EdgeInsets.only(top: 16.0),

@@ -32,8 +32,11 @@ class TextInputWidget extends StatelessWidget {
   final String suffixText;
   final TextStyle suffixStyle;
   final bool enabled;
+  final bool enableInteractiveSelection;
   final Color color;
   final int maxLines;
+  final int maxLength;
+  final TextInputAction textInputAction;
 
   final List<TextInputFormatter> inputFormatters;
 
@@ -61,8 +64,11 @@ class TextInputWidget extends StatelessWidget {
     this.suffixText,
     this.suffixStyle,
     this.enabled = true,
+    this.enableInteractiveSelection = true,
     this.color,
     this.maxLines: 1,
+    this.maxLength,
+    this.textInputAction,
     this.inputFormatters,
   }) : super(key: key);
 
@@ -129,6 +135,10 @@ class TextInputWidget extends StatelessWidget {
             autofocus: autoFocus,
             style: style,
             maxLines: maxLines,
+            maxLength: maxLength,
+            maxLengthEnforced: true,
+            buildCounter:
+                maxLength == null ? null : (context, {currentLength, maxLength, isFocused}) => null,
             enabled: enabled,
             obscureText: obscureText,
             textAlign: TextAlign.left,
@@ -136,7 +146,9 @@ class TextInputWidget extends StatelessWidget {
             inputFormatters: inputFormatters,
             decoration: decoration,
             controller: controller,
+            textInputAction: textInputAction,
             cursorWidth: 1.5,
+            enableInteractiveSelection: enableInteractiveSelection,
             cursorRadius: Radius.circular(1.5),
           ),
         ),

@@ -74,7 +74,7 @@ Widget wrapClearFocus(BuildContext context, {Widget child}) {
   );
 }
 
-void runOnNextFrame(VoidCallback callback) {
+void postFrameCallback(VoidCallback callback) {
   SchedulerBinding.instance.addPostFrameCallback((_) => callback());
 }
 
