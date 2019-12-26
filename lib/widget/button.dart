@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 蓝底白字圆角按钮
+/// 圆角按钮
 class Button extends StatelessWidget {
   static TextStyle defaultStyle = const TextStyle(color: Colors.white);
   static Color defaultColor = Colors.blueAccent;
@@ -18,6 +18,7 @@ class Button extends StatelessWidget {
   final double disabledElevation;
   final EdgeInsetsGeometry margin;
   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry contentPadding;
   final BoxConstraints constraints;
   final AlignmentGeometry alignment;
 
@@ -36,8 +37,9 @@ class Button extends StatelessWidget {
     this.disabledElevation: 0.0,
     this.margin,
     this.padding,
+    this.contentPadding,
     this.constraints,
-    this.alignment,
+    this.alignment: Alignment.center,
   }) : super(key: key);
 
   @override
@@ -46,6 +48,8 @@ class Button extends StatelessWidget {
       margin: margin,
       padding: padding,
       alignment: alignment,
+      height: height,
+      constraints: constraints,
       child: RaisedButton(
         color: color ?? defaultColor,
         focusElevation: focusElevation,
@@ -54,6 +58,7 @@ class Button extends StatelessWidget {
         hoverElevation: hoverElevation,
         elevation: elevation,
         onPressed: onTap,
+        padding: contentPadding,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
         child: Container(
           alignment: Alignment.center,

@@ -18,7 +18,7 @@ class TextButton extends StatelessWidget {
     this.color,
     this.onPress,
     this.alignment = Alignment.center,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.padding,
     this.margin,
     double fontSize = 14.0,
