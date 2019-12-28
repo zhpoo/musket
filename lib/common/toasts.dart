@@ -6,22 +6,25 @@ import 'package:fluttertoast/fluttertoast.dart';
 class Toasts {
   Toasts._();
 
+  /// Toast 提示，ios 默认在中间显示
   static Future<bool> show({
     @required String msg,
-    Toast toastLength,
+    bool longToast = false,
+    bool center,
     int timeInSecForIos = 1,
     double fontSize = 16.0,
-    ToastGravity gravity,
     Color backgroundColor,
     Color textColor,
   }) {
     if (msg?.isEmpty ?? true) return Future<bool>.value(false);
-    if (gravity == null) {
-      gravity = Platform.isIOS ? ToastGravity.CENTER : null;
+    ToastGravity gravity;
+    center ??= Platform.isIOS;
+    if (center) {
+      gravity = ToastGravity.CENTER;
     }
     return Fluttertoast.showToast(
       msg: msg,
-      toastLength: toastLength,
+      toastLength: longToast ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT,
       timeInSecForIos: timeInSecForIos,
       gravity: gravity,
       backgroundColor: backgroundColor,
