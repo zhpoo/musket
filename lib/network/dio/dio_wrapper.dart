@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class HttpOptions extends Options {}
+class HttpOptions extends RequestOptions {}
 
 class HttpCancelToken extends CancelToken {}
 

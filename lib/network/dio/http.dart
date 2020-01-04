@@ -159,6 +159,39 @@ Dio _initDioInstance() {
   return dio;
 }
 
+void mergeDioBaseOptions({
+  String baseUrl,
+  Method method,
+  Map<String, dynamic> queryParameters,
+  String path,
+  int connectTimeout,
+  int receiveTimeout,
+  int sendTimeout,
+  Map<String, dynamic> extra,
+  Map<String, dynamic> headers,
+  String contentType,
+  bool validateStatus(int status),
+  bool receiveDataWhenStatusError,
+  bool followRedirects,
+  int maxRedirects,
+}) {
+  _dio.options = _dio.options.merge(
+    method: method == null ? null : _methodToString(method),
+    baseUrl: baseUrl,
+    queryParameters: queryParameters,
+    connectTimeout: connectTimeout,
+    receiveTimeout: receiveTimeout,
+    sendTimeout: sendTimeout,
+    extra: extra,
+    headers: headers,
+    contentType: contentType,
+    validateStatus: validateStatus,
+    receiveDataWhenStatusError: receiveDataWhenStatusError,
+    followRedirects: followRedirects,
+    maxRedirects: maxRedirects,
+  );
+}
+
 void _logger(Object object) {
   Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
 }
