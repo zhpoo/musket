@@ -20,6 +20,7 @@ class Button extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry contentPadding;
   final BoxConstraints constraints;
+  final Decoration decoration;
   final AlignmentGeometry alignment;
 
   const Button({
@@ -39,6 +40,7 @@ class Button extends StatelessWidget {
     this.padding,
     this.contentPadding,
     this.constraints,
+    this.decoration,
     this.alignment: Alignment.center,
   }) : super(key: key);
 
@@ -50,6 +52,7 @@ class Button extends StatelessWidget {
       alignment: alignment,
       height: height,
       constraints: constraints,
+      decoration: decoration,
       child: RaisedButton(
         color: color ?? defaultColor,
         focusElevation: focusElevation,

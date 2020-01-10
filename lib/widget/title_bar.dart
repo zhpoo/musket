@@ -20,11 +20,13 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   final bool automaticallyImplyLeading;
   @override
   final Size preferredSize;
+  final Color backgroundColor;
 
   TitleBar({
     this.title,
     this.centerTitle = true,
     this.automaticallyImplyLeading = false,
+    this.backgroundColor,
     this.left,
     this.right,
     this.height,
@@ -36,6 +38,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     TextStyle style,
     this.centerTitle = true,
     this.automaticallyImplyLeading = false,
+    this.backgroundColor,
     this.left,
     this.right,
     this.height,
@@ -55,6 +58,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     double backSize: 36,
     List<Widget> rightWidgets,
     this.height,
+    this.backgroundColor,
   })  : this.title = Text(title, style: tittleStyle ?? defaultTitleStyle),
         this.bottom = bottom,
         this.centerTitle = true,
@@ -84,6 +88,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
       actions: right,
       elevation: 0,
       bottom: bottom,
+      backgroundColor: backgroundColor,
     );
     return appBar;
   }
