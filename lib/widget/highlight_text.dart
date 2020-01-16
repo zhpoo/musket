@@ -5,6 +5,7 @@ class HighlightText extends StatelessWidget {
   final String highlight;
   final TextStyle style;
   final Color highlightColor;
+  final bool ignoreCase;
 
   const HighlightText({
     Key key,
@@ -12,6 +13,7 @@ class HighlightText extends StatelessWidget {
     this.highlight,
     this.style,
     this.highlightColor,
+    this.ignoreCase: false,
   }) : super(key: key);
 
   @override
@@ -23,24 +25,22 @@ class HighlightText extends StatelessWidget {
 
     List<TextSpan> spans = [];
     int start = 0;
-    int indexOfHighlight;
+    int index;
     do {
-      indexOfHighlight = text.indexOf(highlight, start);
-      if (indexOfHighlight < 0) {
-        // no highlight
+      if (ignoreCase) {
+        index = text.toLowerCase().indexOf(highlight.toLowerCase(), start);
+      } else {
+        index = text.indexOf(highlight, start);
+      }
+      if (index < 0) {
         spans.add(_normalSpan(text.substring(start, text.length)));
         break;
       }
-      if (indexOfHighlight == start) {
-        // start with highlight.
-        spans.add(_highlightSpan(highlight));
-        start += highlight.length;
-      } else {
-        // normal + highlight
-        spans.add(_normalSpan(text.substring(start, indexOfHighlight)));
-        spans.add(_highlightSpan(highlight));
-        start = indexOfHighlight + highlight.length;
+      if (index > start) {
+        spans.add(_normalSpan(text.substring(start, index)));
       }
+      spans.add(_highlightSpan(text.substring(index, index + highlight.length)));
+      start = index + highlight.length;
     } while (true);
 
     return Text.rich(TextSpan(children: spans));
