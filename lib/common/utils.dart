@@ -62,6 +62,12 @@ String formatString(String fmt, List args) {
   return sprintf.call(fmt, args);
 }
 
+bool matchEmail(String email) {
+  if (email?.isEmpty == true) return false;
+  var regExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)*$');
+  return regExp.hasMatch(email);
+}
+
 void clearFocus(BuildContext context) {
   FocusScope.of(context).requestFocus(FocusNode());
 }

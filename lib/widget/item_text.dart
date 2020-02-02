@@ -15,7 +15,8 @@ class ItemText extends StatelessWidget {
   final double minHeight;
   final bool withRightArrow;
   final TextStyle style;
-  final double iconSize;
+  final double iconWidth;
+  final double icoHeight;
 
   const ItemText({
     Key key,
@@ -24,7 +25,8 @@ class ItemText extends StatelessWidget {
     this.style,
     this.right,
     this.onTap,
-    this.iconSize,
+    this.iconWidth,
+    this.icoHeight,
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = false,
         super(key: key);
@@ -36,7 +38,8 @@ class ItemText extends StatelessWidget {
     this.style,
     this.onTap,
     this.right,
-    this.iconSize,
+    this.iconWidth,
+    this.icoHeight,
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = true,
         super(key: key);
@@ -49,8 +52,8 @@ class ItemText extends StatelessWidget {
         margin: EdgeInsets.only(left: 16),
         child: Image.asset(
           icon,
-          width: iconSize ?? defaultIconSize ?? 24,
-          height: iconSize ?? defaultIconSize ?? 24,
+          width: iconWidth ?? defaultIconSize ?? 24,
+          height: icoHeight ?? defaultIconSize ?? 24,
         ),
       ));
     }

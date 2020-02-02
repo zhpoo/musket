@@ -9,6 +9,8 @@ class RightArrowItem extends StatelessWidget {
   final VoidCallback onPress;
   final bool marginDivider;
   final Color background;
+  final double iconHeight;
+  final double iconWidth;
 
   /// 带右箭头的 Widget
   RightArrowItem({
@@ -16,7 +18,9 @@ class RightArrowItem extends StatelessWidget {
     this.icon,
     this.onPress,
     this.marginDivider = false,
-    this.background = Colors.white,
+    this.background: Colors.white,
+    this.iconHeight: Defaults.iconSize,
+    this.iconWidth: Defaults.iconSize,
   });
 
   /// 可点击的带 icon 的文本 item
@@ -27,6 +31,8 @@ class RightArrowItem extends StatelessWidget {
     this.icon,
     this.background = Colors.white,
     this.marginDivider = true,
+    this.iconHeight: Defaults.iconSize,
+    this.iconWidth: Defaults.iconSize,
   }) : content = Text(text, style: textStyle ?? defaultTextStyle);
 
   @override
@@ -38,7 +44,7 @@ class RightArrowItem extends StatelessWidget {
           left: marginDivider ? 0 : Defaults.commonMargin,
           right: marginDivider ? Defaults.commonMargin : 0,
         ),
-        child: Image.asset(icon, width: Defaults.iconSize, height: Defaults.iconSize),
+        child: Image.asset(icon, width: iconWidth, height: iconHeight),
       ));
     }
     children.add(Expanded(
