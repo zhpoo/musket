@@ -59,23 +59,26 @@ class ItemText extends StatelessWidget {
     }
     children.add(Expanded(
       child: Container(
-        margin: EdgeInsets.only(left: 16),
+        margin: const EdgeInsets.only(left: 16),
         child: Text(text, style: style ?? defaultStyle),
       ),
     ));
-    Widget right = this.right;
-    if (withRightArrow && rightArrowImage != null) {
-      right ??= Image.asset(rightArrowImage, width: 8.0, height: 14);
+    List<Widget> rights = [];
+    if (this.right != null) {
+      rights.add(this.right);
     }
-    if (right != null) {
-      children.add(right);
+    if (withRightArrow && rightArrowImage != null) {
+      rights.add(Image.asset(rightArrowImage, width: 8.0, height: 14));
+    }
+    if (rights.isNotEmpty) {
+      children.add(Row(mainAxisSize: MainAxisSize.min, children: rights));
     }
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
       child: Container(
         constraints: BoxConstraints(minHeight: minHeight),
-        padding: EdgeInsets.all(16).copyWith(left: 0),
+        padding: const EdgeInsets.all(16).copyWith(left: 0),
         child: Row(children: children),
       ),
     );

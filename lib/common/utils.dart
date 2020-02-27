@@ -63,9 +63,15 @@ String formatString(String fmt, List args) {
 }
 
 bool matchEmail(String email) {
-  if (email?.isEmpty == true) return false;
+  if (email?.isEmpty ?? true) return false;
   var regExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)*$');
   return regExp.hasMatch(email);
+}
+
+bool matchErc20(String address) {
+  if (address?.isEmpty ?? true) return false;
+  var regExp = RegExp(r'^0x[0-9a-fA-F]{40}$');
+  return regExp.hasMatch(address);
 }
 
 void clearFocus(BuildContext context) {

@@ -9,6 +9,7 @@ import 'code.dart';
 import 'dio_wrapper.dart';
 import 'response_interceptor.dart';
 import 'result_data.dart';
+import 'package:http_parser/http_parser.dart';
 
 const contentTypeFormData = 'multipart/form-data';
 
@@ -17,7 +18,7 @@ class Http {
   Method method;
   Map<String, File> _files = {};
   Map<String, dynamic> _params = {};
-  HttpOptions options = new HttpOptions();
+  HttpOptions options = HttpOptions();
 
   HttpCancelToken cancelToken;
   HttpProgressCallback onSendProgress;
@@ -104,7 +105,11 @@ class Http {
 
   _createMultipartFiles() async {
     _files.forEach((key, file) {
-      _params[key] = MultipartFile.fromFileSync(file.path, filename: basename(file.path));
+      _params[key] = MultipartFile.fromFileSync(
+        file.path,
+        filename: basename(file.path),
+        contentType: parseMediaType(file),
+      );
     });
   }
 
@@ -113,12 +118,12 @@ class Http {
     if (e.response != null) {
       errorResponse = e.response;
     } else {
-      errorResponse = new Response(statusCode: Code.failed, request: e.request);
+      errorResponse = Response(statusCode: Code.failed, request: e.request);
     }
     if (e.type == DioErrorType.CONNECT_TIMEOUT || e.type == DioErrorType.RECEIVE_TIMEOUT) {
       errorResponse.statusCode = Code.networkTimeout;
     }
-    return new ResultData(e.message, false, errorResponse.statusCode);
+    return ResultData(e.message, false, errorResponse.statusCode);
   }
 }
 
@@ -142,7 +147,7 @@ String _methodToString(Method method) {
 final _dio = _initDioInstance();
 
 Dio _initDioInstance() {
-  Dio dio = new Dio();
+  Dio dio = Dio();
   dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;
   dio.options.headers[Headers.acceptHeader] = Headers.jsonContentType;
   dio.options.connectTimeout = BaseConfig.httpConnectTimeout;
@@ -194,4 +199,46 @@ void mergeDioBaseOptions({
 
 void _logger(Object object) {
   Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
+}
+
+MediaType parseMediaType(File file) {
+  if (file?.path?.isEmpty ?? true) return null;
+  var extensionIndex = file.path.lastIndexOf('.');
+  if (extensionIndex == -1) return null;
+  switch (file.path.substring(extensionIndex)) {
+    case ".jpg":
+    case ".jpeg":
+    case ".jpe":
+      return MediaType("image", "jpeg");
+    case ".png":
+      return MediaType("image", "png");
+    case ".bmp":
+      return MediaType("image", "bmp");
+    case ".gif":
+      return MediaType("image", "gif");
+    case ".svg":
+    case ".svgz":
+      return MediaType("image", "svg+xml");
+    case ".json":
+      return MediaType("application", "json");
+    case ".mp3":
+      return MediaType("audio", "mpeg");
+    case ".mp4":
+      return MediaType("video", "mp4");
+    case ".htm":
+    case ".html":
+      return MediaType("text", "html");
+    case ".css":
+      return MediaType("text", "css");
+    case ".csv":
+      return MediaType("text", "csv");
+    case ".txt":
+    case ".text":
+    case ".conf":
+    case ".def":
+    case ".log":
+    case ".in":
+      return MediaType("text", "plain");
+  }
+  return null;
 }

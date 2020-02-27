@@ -39,6 +39,7 @@ class InfoWithTitle extends StatelessWidget {
 
     if (vertical) {
       content = Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: verticalCrossAxisAlignment,
         children: <Widget>[
           titleWidget,
