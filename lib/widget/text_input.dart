@@ -18,6 +18,7 @@ class TextInputWidget extends StatelessWidget {
   final TextStyle hintStyle;
   final InputBorder border;
   final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry labelMargin;
   final EdgeInsetsGeometry contentPadding;
   final TextEditingController controller;
   final TextInputType keyboardType;
@@ -32,6 +33,7 @@ class TextInputWidget extends StatelessWidget {
   final String suffixText;
   final TextStyle suffixStyle;
   final bool enabled;
+  final bool readOnly;
   final bool enableInteractiveSelection;
   final Color color;
   final int maxLines;
@@ -51,6 +53,7 @@ class TextInputWidget extends StatelessWidget {
     this.hintStyle,
     this.border,
     this.margin,
+    this.labelMargin: const EdgeInsets.only(bottom: 8),
     this.contentPadding = const EdgeInsets.symmetric(vertical: 4),
     this.keyboardType,
     this.obscureText = false,
@@ -64,6 +67,7 @@ class TextInputWidget extends StatelessWidget {
     this.suffixText,
     this.suffixStyle,
     this.enabled = true,
+    this.readOnly = false,
     this.enableInteractiveSelection = true,
     this.color,
     this.maxLines: 1,
@@ -111,7 +115,7 @@ class TextInputWidget extends StatelessWidget {
 
     if (label != null && label.isNotEmpty) {
       columnChildren.add(Container(
-        margin: EdgeInsets.only(bottom: 8),
+        margin: labelMargin,
         child: Text(label, style: labelStyle),
       ));
     }
@@ -140,6 +144,7 @@ class TextInputWidget extends StatelessWidget {
             buildCounter:
                 maxLength == null ? null : (context, {currentLength, maxLength, isFocused}) => null,
             enabled: enabled,
+            readOnly: readOnly ?? false,
             obscureText: obscureText,
             textAlign: TextAlign.left,
             keyboardType: keyboardType,
