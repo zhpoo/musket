@@ -14,7 +14,8 @@ class AttentionStyle {
 
 class Attention extends StatelessWidget {
   static AttentionStyle defaultStyle;
-  static AttentionStyle _defaults = defaultStyle ?? const AttentionStyle();
+
+  static AttentionStyle get _defaults => defaultStyle ?? const AttentionStyle();
 
   final String title;
   final List<String> attentions;
@@ -47,7 +48,7 @@ class Attention extends StatelessWidget {
     if (attentions?.isNotEmpty == true) {
       children.addAll(attentions.map((text) {
         var attention = <Widget>[];
-        if (showDot) {
+        if (showDot == true) {
           attention.add(Container(
             width: dotSize,
             height: dotSize,

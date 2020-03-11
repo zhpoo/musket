@@ -18,10 +18,9 @@ class DialogStyle {
 }
 
 class DialogContainer extends StatelessWidget {
-  static const TextStyle _baseStyle = const TextStyle(inherit: false);
-
   static DialogStyle defaultStyle;
-  static DialogStyle _defaults = defaultStyle ?? const DialogStyle();
+
+  static DialogStyle get _defaults => defaultStyle ?? const DialogStyle();
 
   final double radius;
   final double buttonHeight;
@@ -35,20 +34,20 @@ class DialogContainer extends StatelessWidget {
   final bool showTitleBorder;
   final bool showButtonBorder;
 
-  const DialogContainer(
-      {Key key,
-      this.title,
-      this.content,
-      this.buttonHeight,
-      this.radius: 8,
-      this.titlePadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-      this.background,
-      this.buttons,
-      this.borderSide,
-      this.titleStyle,
-      this.showTitleBorder: false,
-      this.showButtonBorder: true})
-      : super(key: key);
+  const DialogContainer({
+    Key key,
+    this.title,
+    this.content,
+    this.buttonHeight,
+    this.radius: 8,
+    this.titlePadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+    this.background,
+    this.buttons,
+    this.borderSide,
+    this.titleStyle,
+    this.showTitleBorder: false,
+    this.showButtonBorder: true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +60,7 @@ class DialogContainer extends StatelessWidget {
         alignment: Alignment.center,
         decoration: showTitleBorder ? BoxDecoration(border: Border(bottom: borderSide)) : null,
         padding: titlePadding,
-        child: Text(title, style: _baseStyle.merge(titleStyle ?? _defaults.titleStyle)),
+        child: Text(title, style: titleStyle ?? _defaults.titleStyle),
       ));
     }
     if (content != null) {
@@ -72,9 +71,10 @@ class DialogContainer extends StatelessWidget {
       for (int i = 0; i < buttons.length; i++) {
         final button = buttons[i];
         buttonsRow.add(Expanded(
+          flex: button.flex,
           child: Button(
             color: button.color ?? background ?? _defaults.background,
-            textStyle: _baseStyle.merge(button.style ?? _defaults.buttonStyle),
+            textStyle: button.style ?? _defaults.buttonStyle,
             text: button.text,
             onTap: button.onTap,
             borderRadius: BorderRadius.only(
@@ -92,13 +92,16 @@ class DialogContainer extends StatelessWidget {
       }
       children.add(Row(children: buttonsRow));
     }
-    return Container(
-      width: width,
-      decoration: BoxDecoration(
-        color: background ?? _defaults.background,
-        borderRadius: BorderRadius.circular(radius),
+    return DefaultTextStyle(
+      style: const TextStyle(inherit: false),
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          color: background ?? _defaults.background,
+          borderRadius: BorderRadius.circular(radius),
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: children),
       ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }
@@ -108,6 +111,13 @@ class DialogButton {
   final TextStyle style;
   final VoidCallback onTap;
   final Color color;
+  final int flex;
 
-  const DialogButton({this.text, this.style, this.onTap, this.color});
+  const DialogButton({
+    this.text,
+    this.style,
+    this.onTap,
+    this.color,
+    this.flex: 1,
+  });
 }

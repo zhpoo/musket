@@ -54,7 +54,7 @@ class Dialogs {
     );
   }
 
-  static Future<T> showLoading<T>(
+  static showLoading<T>(
     BuildContext context, {
     Widget indicator: const LoadingIndicator(),
     bool cancelable: false,

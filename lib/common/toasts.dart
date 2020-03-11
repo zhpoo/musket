@@ -7,7 +7,7 @@ class Toasts {
   Toasts._();
 
   /// Toast 提示，ios 默认在中间显示
-  static Future<bool> show({
+  static show({
     @required String msg,
     bool longToast = false,
     bool center,
@@ -32,7 +32,7 @@ class Toasts {
     );
   }
 
-  static Future<bool> cancel() {
+  static cancel() {
     return Fluttertoast.cancel();
   }
 }
