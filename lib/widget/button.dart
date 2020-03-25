@@ -14,6 +14,9 @@ class ButtonStyle {
   final AlignmentGeometry alignment;
   final bool expand;
   final BoxConstraints constraints;
+  final MaterialTapTargetSize materialTapTargetSize;
+  final Decoration decoration;
+  final Decoration foregroundDecoration;
 
   ButtonStyle({
     this.style: const TextStyle(color: Colors.white),
@@ -27,10 +30,13 @@ class ButtonStyle {
     this.disabledElevation: 0.0,
     this.expand: true,
     this.alignment,
+    this.materialTapTargetSize,
+    this.decoration,
+    this.foregroundDecoration,
     BoxConstraints constraints,
   }) : constraints = height != null
-            ? constraints?.copyWith(minHeight: max(height, constraints.minHeight)) ??
-                BoxConstraints(minHeight: height)
+            ? (constraints?.copyWith(minHeight: max(height, constraints.minHeight)) ??
+                BoxConstraints(minHeight: height))
             : constraints;
 }
 
@@ -59,7 +65,11 @@ class Button extends StatelessWidget {
   final AlignmentGeometry alignment;
   final BorderRadiusGeometry borderRadius;
   final bool expand;
+  final MaterialTapTargetSize materialTapTargetSize;
 
+  /// Material Design默认 button 高度为 48，如果设置[height]低于 48，且不
+  /// 设置 button 的 materialTapTargetSize 属性,则 [height] 会被限制最低高度 48.
+  /// 如需强制设置高度低于48，需同时设置[materialTapTargetSize]为[MaterialTapTargetSize.shrinkWrap]。
   Button({
     Key key,
     @required this.text,
@@ -80,16 +90,22 @@ class Button extends StatelessWidget {
     this.borderRadius,
     this.expand,
     this.alignment,
+    this.materialTapTargetSize,
     double height,
     BoxConstraints constraints,
   })  : constraints = height != null
-            ? constraints?.tighten(height: height) ?? BoxConstraints(minHeight: height)
-            : constraints ?? _defaults.constraints,
+            ? (constraints?.copyWith(minHeight: max(height, constraints.minHeight)) ??
+                BoxConstraints(minHeight: height))
+            : (constraints ?? _defaults.constraints),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var button = RaisedButton(
+      materialTapTargetSize: materialTapTargetSize ??
+          ((this.constraints?.minHeight ?? 0) < 48
+              ? MaterialTapTargetSize.shrinkWrap
+              : MaterialTapTargetSize.padded),
       color: color ?? _defaults.color,
       focusElevation: focusElevation ?? _defaults.focusElevation,
       highlightElevation: highlightElevation ?? _defaults.highlightElevation,
@@ -101,7 +117,7 @@ class Button extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius ?? BorderRadius.circular(radius ?? _defaults.radius),
       ),
-      child: Text(text, style: textStyle ?? _defaults.style),
+      child: Text(text, style: textStyle ?? _defaults.style, textAlign: TextAlign.center),
     );
     final expand = this.expand ?? _defaults.expand ?? true;
     return Container(
@@ -109,8 +125,8 @@ class Button extends StatelessWidget {
       padding: padding,
       alignment: expand ? null : alignment ?? _defaults.alignment,
       constraints: constraints,
-      decoration: decoration,
-      foregroundDecoration: foregroundDecoration,
+      decoration: decoration ?? _defaults.decoration,
+      foregroundDecoration: foregroundDecoration ?? _defaults.foregroundDecoration,
       child: expand ? SizedBox(width: double.infinity, child: button) : button,
     );
   }

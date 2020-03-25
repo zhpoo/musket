@@ -11,6 +11,7 @@ class TextButton extends StatelessWidget {
   final VoidCallback onPress;
   final TextStyle style;
   final AlignmentGeometry alignment;
+  final BoxConstraints constraints;
 
   TextButton({
     this.text,
@@ -21,6 +22,7 @@ class TextButton extends StatelessWidget {
     this.backgroundColor,
     this.padding,
     this.margin,
+    this.constraints,
     double fontSize = 14.0,
   }) : this.style = style ?? defaultStyle.copyWith(fontSize: fontSize, color: color);
 
@@ -34,6 +36,7 @@ class TextButton extends StatelessWidget {
         margin: margin,
         padding: padding,
         color: backgroundColor,
+        constraints: constraints,
         child: Text(text, style: style),
       ),
     );
