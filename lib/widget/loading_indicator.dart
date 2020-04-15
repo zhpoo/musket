@@ -39,11 +39,14 @@ class LoadingIndicator extends StatelessWidget {
     if (text != null) {
       children.add(Container(
         margin: EdgeInsets.only(top: 16.0),
-        child: Text(text, style: TextStyle(fontSize: fontSize, color: textColor, inherit: false)),
+        child: Text(text,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: fontSize, color: textColor, inherit: false)),
       ));
     }
     return Container(
       margin: margin,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(containerRadius)),
@@ -52,7 +55,6 @@ class LoadingIndicator extends StatelessWidget {
         minWidth: width,
         maxWidth: width,
         minHeight: height,
-        maxHeight: height,
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: children),
     );

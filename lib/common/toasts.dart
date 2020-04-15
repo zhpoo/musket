@@ -3,32 +3,44 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+class ToastStyle {
+  final Color backgroundColor;
+  final Color textColor;
+  final ToastGravity gravity;
+  final int timeInSecForIos;
+  final double fontSize;
+
+  ToastStyle({
+    this.backgroundColor,
+    this.textColor,
+    ToastGravity gravity,
+    this.timeInSecForIos = 2,
+    this.fontSize = 16.0,
+  }) : gravity = gravity ?? Platform.isIOS ? ToastGravity.CENTER : null;
+}
+
 class Toasts {
+  static ToastStyle defaultStyle = ToastStyle();
+
   Toasts._();
 
-  /// Toast 提示，ios 默认在中间显示
   static show({
     @required String msg,
     bool longToast = false,
     bool center,
-    int timeInSecForIos = 1,
-    double fontSize = 16.0,
+    int timeInSecForIos,
+    double fontSize,
     Color backgroundColor,
     Color textColor,
   }) {
     if (msg?.isEmpty ?? true) return Future<bool>.value(false);
-    ToastGravity gravity;
-    center ??= Platform.isIOS;
-    if (center) {
-      gravity = ToastGravity.CENTER;
-    }
     return Fluttertoast.showToast(
       msg: msg,
       toastLength: longToast ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT,
-      timeInSecForIos: timeInSecForIos,
-      gravity: gravity,
-      backgroundColor: backgroundColor,
-      textColor: textColor,
+      timeInSecForIos: timeInSecForIos ?? defaultStyle?.timeInSecForIos,
+      gravity: center == true ? ToastGravity.CENTER : defaultStyle?.gravity,
+      backgroundColor: backgroundColor ?? defaultStyle?.backgroundColor,
+      textColor: textColor ?? defaultStyle?.textColor,
     );
   }
 

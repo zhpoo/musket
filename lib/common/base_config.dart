@@ -61,10 +61,26 @@ mixin BaseConfig {
     }
   }
 
+  static Future<String> get brand async {
+    if (Platform.isAndroid) {
+      var deviceInfo = await androidDeviceInfo;
+      return deviceInfo?.brand;
+    }
+    return '';
+  }
+
   static Future<String> get deviceInfo async {
-    return '${await manufacturer} ${await deviceModel} $platform ${await osVersion}\n'
-        'appVersion: ${await appVersion}\n'
-        'deviceId: ${await deviceId}\n';
+    if (Platform.isIOS) {
+      return '$platform|${await manufacturer}|${await deviceModel}|${await osVersion}|${await deviceId}|';
+    }
+    if (Platform.isAndroid) {
+      var android = await androidDeviceInfo;
+      if (android == null) {
+        return '${DateTime.now().millisecondsSinceEpoch}:unknown device info';
+      }
+      return '$platform|${android.manufacturer}|${android.board}|${android.device}|${android.hardware}|${android.product}|${android.model}|${android.version?.release}|${android.androidId}';
+    }
+    return '${Platform.operatingSystem} not support yet.';
   }
 
   static Future<AndroidDeviceInfo> get androidDeviceInfo async {

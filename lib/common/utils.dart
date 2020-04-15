@@ -47,7 +47,11 @@ String parseDateTime(BuildContext context, DateTime dateTime, String languageCod
 }
 
 String fixedAmount(num value, [int fractionDigits = 2]) {
-  return '${(value ?? 0).toStringAsFixed(fractionDigits)}';
+  value ??= 0;
+  if (fractionDigits == 0) {
+    return '${value.floor()}';
+  }
+  return '${value.toStringAsFixed(fractionDigits)}';
 }
 
 String durationToString(Duration duration) {

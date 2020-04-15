@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CircleWidget extends StatelessWidget {
   final Widget child;
 
+  final Color color;
   final Color borderColor;
   final double borderWidth;
   final double width;
@@ -16,6 +17,7 @@ class CircleWidget extends StatelessWidget {
     this.width,
     this.height,
     this.borderColor = Colors.black,
+    this.color = Colors.transparent,
     this.borderWidth = 1.0,
     this.padding,
     this.margin,
@@ -33,7 +35,7 @@ class CircleWidget extends StatelessWidget {
         border: Border.all(color: borderColor, width: borderWidth),
       ),
       child: PhysicalModel(
-        color: Colors.transparent,
+        color: color,
         shape: BoxShape.circle,
         clipBehavior: Clip.antiAlias,
         child: child,

@@ -36,6 +36,7 @@ class TextInputWidget extends StatelessWidget {
   final bool readOnly;
   final bool enableInteractiveSelection;
   final Color color;
+  final int minLines;
   final int maxLines;
   final int maxLength;
   final TextInputAction textInputAction;
@@ -70,6 +71,7 @@ class TextInputWidget extends StatelessWidget {
     this.readOnly = false,
     this.enableInteractiveSelection = true,
     this.color,
+    this.minLines,
     this.maxLines: 1,
     this.maxLength,
     this.textInputAction,
@@ -138,6 +140,7 @@ class TextInputWidget extends StatelessWidget {
           child: TextField(
             autofocus: autoFocus,
             style: style,
+            minLines: minLines,
             maxLines: maxLines,
             maxLength: maxLength,
             maxLengthEnforced: true,
