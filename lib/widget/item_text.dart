@@ -17,6 +17,7 @@ class ItemText extends StatelessWidget {
   final TextStyle style;
   final double iconWidth;
   final double icoHeight;
+  final Color color;
 
   const ItemText({
     Key key,
@@ -27,6 +28,7 @@ class ItemText extends StatelessWidget {
     this.onTap,
     this.iconWidth,
     this.icoHeight,
+    this.color,
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = false,
         super(key: key);
@@ -40,6 +42,7 @@ class ItemText extends StatelessWidget {
     this.right,
     this.iconWidth,
     this.icoHeight,
+    this.color,
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = true,
         super(key: key);
@@ -77,6 +80,7 @@ class ItemText extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
       child: Container(
+        color: color,
         constraints: BoxConstraints(minHeight: minHeight),
         padding: const EdgeInsets.all(16).copyWith(left: 0),
         child: Row(children: children),

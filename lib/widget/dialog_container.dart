@@ -60,7 +60,7 @@ class DialogContainer extends StatelessWidget {
         alignment: Alignment.center,
         decoration: showTitleBorder ? BoxDecoration(border: Border(bottom: borderSide)) : null,
         padding: titlePadding,
-        child: Text(title, style: titleStyle ?? _defaults.titleStyle),
+        child: Text(title, style: titleStyle ?? _defaults.titleStyle, textAlign: TextAlign.center),
       ));
     }
     if (content != null) {
