@@ -51,6 +51,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   TitleBar.withBack({
     @required BuildContext context,
     @required String title,
+    String backImage,
     TextStyle tittleStyle,
     VoidCallback onPressBack,
     PreferredSizeWidget bottom,
@@ -72,9 +73,9 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
         }()),
         this.left = GestureDetector(
           onTap: onPressBack ?? () => Navigator.of(context).pop(),
-          child: backAsset == null
+          child: backImage == null && backAsset == null
               ? Icon(Icons.arrow_back_ios, size: backSize)
-              : Image.asset(backAsset, width: backSize, height: backSize),
+              : Image.asset(backImage ?? backAsset, width: backSize, height: backSize),
         ),
         preferredSize = _preferredSize(height, bottom);
 

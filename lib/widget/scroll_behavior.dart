@@ -25,7 +25,8 @@ class GlowingOverScrollBehavior extends ScrollBehavior {
           axisDirection: axisDirection,
           color: Theme.of(context).accentColor,
         );
+      default:
+        return child;
     }
-    return null;
   }
 }

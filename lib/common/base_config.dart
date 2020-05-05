@@ -1,13 +1,11 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info/package_info.dart';
 
 mixin BaseConfig {
-  static const bool debug = !bool.fromEnvironment('dart.vm.product');
-
-  /// 网络连接超时时间
-  static int get httpConnectTimeout => 15 * 1000;
+  static const bool debug = !kReleaseMode;
 
   static String get platform => Platform.isAndroid ? 'android' : 'ios';
 

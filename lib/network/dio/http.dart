@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:musket/common/base_config.dart';
 import 'package:musket/common/logger.dart';
+import 'package:path/path.dart';
 
 import 'code.dart';
 import 'dio_wrapper.dart';
 import 'response_interceptor.dart';
 import 'result_data.dart';
-import 'package:http_parser/http_parser.dart';
 
 const contentTypeFormData = 'multipart/form-data';
 
@@ -150,7 +150,7 @@ Dio _initDioInstance() {
   Dio dio = Dio();
   dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;
   dio.options.headers[Headers.acceptHeader] = Headers.jsonContentType;
-  dio.options.connectTimeout = BaseConfig.httpConnectTimeout;
+  dio.options.connectTimeout = 15 * 1000;
   if (BaseConfig.debug) {
     dio.interceptors.add(LogInterceptor(
       requestBody: true,

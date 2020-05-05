@@ -59,7 +59,7 @@ class Routes {
   }
 
   /// 关闭路由页面
-  static bool pop<T>(BuildContext context, [T result]) {
-    return Navigator.of(context).pop(result);
+  static void pop<T>(BuildContext context, [T result]) {
+    Navigator.of(context).pop(result);
   }
 }
