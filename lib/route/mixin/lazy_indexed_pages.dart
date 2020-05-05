@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
+import 'package:musket/route/mixin/index_mixin.dart';
 
-mixin LazyIndexedPagesMixin {
+mixin LazyIndexedPagesMixin on IndexMixin {
   final Map<int, bool> _pageInitStates = {};
-
-  int currentPageIndex = 0;
 
   List<Widget> get pages;
 
   List<Widget> get lazyPages {
-    if (pages?.isEmpty ?? true) return pages;
-    _pageInitStates[currentPageIndex] = true;
+    if ((pages?.isEmpty ?? true) || currentIndex < 0 || currentIndex >= pages.length) return pages;
+    _pageInitStates[currentIndex] = true;
     final result = <Widget>[];
     for (var i = 0; i < pages.length; i++) {
       if (_pageInitStates[i] == true) {
@@ -19,5 +18,24 @@ mixin LazyIndexedPagesMixin {
       }
     }
     return result;
+  }
+
+  IndexedStack get lazyPagesIndexedStack => lazyIndexedStack();
+
+  IndexedStack lazyIndexedStack({
+    Key key,
+    AlignmentGeometry alignment = AlignmentDirectional.topStart,
+    TextDirection textDirection,
+    StackFit sizing = StackFit.loose,
+    List<Widget> children = const <Widget>[],
+  }) {
+    return IndexedStack(
+      key: key,
+      index: currentIndex,
+      children: lazyPages,
+      alignment: alignment,
+      textDirection: textDirection,
+      sizing: sizing,
+    );
   }
 }

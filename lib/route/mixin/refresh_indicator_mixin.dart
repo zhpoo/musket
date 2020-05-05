@@ -9,7 +9,7 @@ mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
-    if (initCallRefresh ?? true) postFrameCallback(callRefresh);
+    if (autoRefreshOnInit == true) postFrameCallback(callRefresh);
   }
 
   void callRefresh() {
@@ -18,7 +18,7 @@ mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
 
   Future<void> onRefresh();
 
-  bool get initCallRefresh => true;
+  bool get autoRefreshOnInit => true;
 
   RefreshIndicator refreshIndicator({
     @required Widget child,
