@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:musket/route/mixin/index_mixin.dart';
 
-mixin LazyIndexedPagesMixin on IndexMixin {
+mixin LazyIndexedPagesMixin<T extends StatefulWidget> on IndexMixin<T> {
   final Map<int, bool> _pageInitStates = {};
 
   List<Widget> get pages;
@@ -27,7 +27,6 @@ mixin LazyIndexedPagesMixin on IndexMixin {
     AlignmentGeometry alignment = AlignmentDirectional.topStart,
     TextDirection textDirection,
     StackFit sizing = StackFit.loose,
-    List<Widget> children = const <Widget>[],
   }) {
     return IndexedStack(
       key: key,

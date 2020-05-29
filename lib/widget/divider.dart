@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:musket/common/defaults.dart';
 
+class LineStyle {
+  final Color color;
+  final Color background;
+  final double height;
+
+  const LineStyle({
+    this.background,
+    this.color = Defaults.borderColor,
+    this.height = Defaults.dividerHeight,
+  });
+}
+
 class Line extends StatelessWidget implements PreferredSizeWidget {
-  static Color defaultColor = Defaults.borderColor;
-  static double defaultHeight = Defaults.dividerHeight;
+  static LineStyle defaultStyle;
+
+  static LineStyle get _defaults => defaultStyle ?? const LineStyle();
 
   final Color color;
   final Color background;
   final double height;
-  final EdgeInsetsGeometry margin;
+  final EdgeInsets margin;
 
   Line({
     Key key,
@@ -16,7 +29,7 @@ class Line extends StatelessWidget implements PreferredSizeWidget {
     this.background,
     this.height,
     this.margin: const EdgeInsets.symmetric(horizontal: 16.0),
-  })  : preferredSize = Size.fromHeight(height ?? defaultHeight),
+  })  : preferredSize = Size.fromHeight(height ?? _defaults.height),
         super(key: key);
 
   Line.expand({
@@ -25,18 +38,21 @@ class Line extends StatelessWidget implements PreferredSizeWidget {
     this.background,
     this.height,
   })  : this.margin = null,
-        preferredSize = Size.fromHeight(height ?? defaultHeight),
+        preferredSize = Size.fromHeight(height ?? _defaults.height),
         super(key: key);
 
   final Size preferredSize;
 
   @override
   Widget build(BuildContext context) {
-    var line = Container(
-      height: height ?? defaultHeight,
-      color: color ?? defaultColor,
-      margin: margin,
+    return Container(
+      padding: EdgeInsets.only(left: margin?.left ?? 0, right: margin?.right ?? 0),
+      margin: EdgeInsets.only(top: margin?.top ?? 0, bottom: margin?.bottom ?? 0),
+      color: background ?? _defaults.background,
+      child: Container(
+        height: height ?? _defaults.height,
+        color: color ?? _defaults.color,
+      ),
     );
-    return background == null ? line : Container(color: background, child: line);
   }
 }

@@ -4,10 +4,13 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info/package_info.dart';
 
+final kIsAndroid = !kIsWeb && Platform.isAndroid;
+final kIsIOS = !kIsWeb && Platform.isIOS;
+
 mixin BaseConfig {
   static const bool debug = !kReleaseMode;
 
-  static String get platform => Platform.isAndroid ? 'android' : 'ios';
+  static String get platform => kIsAndroid ? 'android' : kIsIOS ? 'ios' : 'web';
 
   static Future<String> get appVersion async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();

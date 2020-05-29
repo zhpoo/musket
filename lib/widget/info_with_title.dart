@@ -51,8 +51,16 @@ class InfoWithTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var titleWidget = Text(title ?? '', style: titleStyle ?? _defaults.titleStyle);
-    Widget infoWidget = Text(info ?? '', style: infoStyle ?? _defaults.infoStyle);
+    var titleWidget = Text(
+      title ?? '',
+      style: titleStyle ?? _defaults.titleStyle,
+      textAlign: TextAlign.center,
+    );
+    Widget infoWidget = Text(
+      info ?? '',
+      style: infoStyle ?? _defaults.infoStyle,
+      textAlign: TextAlign.center,
+    );
     if (onTapInfo != null && info.isNotEmpty) {
       infoWidget = GestureDetector(onTap: onTapInfo, child: infoWidget);
     }

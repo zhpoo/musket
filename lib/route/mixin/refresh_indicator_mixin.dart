@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/common/utils.dart';
 
@@ -44,4 +43,36 @@ mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
       semanticsValue: semanticsValue,
     );
   }
+}
+
+extension RefreshIndicatorExtension on Widget {
+  /// [nestedFillRemaining]设为true将[Widget]嵌套进[CustomScrollView]中[SliverFillRemaining]里，
+  /// 这样就可以保证 [Widget] 具有下拉刷新功能。
+  /// 解决[RefreshIndicator]的child不是可滚动组件时无法下拉刷新的问题
+  RefreshIndicator intoRefreshIndicator(
+    RefreshIndicatorMixin indicator, {
+    double displacement = 40.0,
+    Color color,
+    Color backgroundColor,
+    String semanticsLabel,
+    String semanticsValue,
+    ScrollNotificationPredicate notificationPredicate = defaultScrollNotificationPredicate,
+    bool nestedFillRemaining = false,
+  }) {
+    return indicator.refreshIndicator(
+      child: nestedFillRemaining == true
+          ? CustomScrollView(slivers: <Widget>[SliverFillRemaining(child: this)])
+          : this,
+      displacement: displacement,
+      color: color,
+      backgroundColor: backgroundColor,
+      notificationPredicate: notificationPredicate,
+      semanticsLabel: semanticsLabel,
+      semanticsValue: semanticsValue,
+    );
+  }
+}
+
+bool alwaysScrollNotificationPredicate(ScrollNotification notification) {
+  return true;
 }

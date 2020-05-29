@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:musket/musket.dart';
 
@@ -51,11 +55,13 @@ String fixedAmount(num value, [int fractionDigits = 2]) {
   if (fractionDigits == 0) {
     return '${value.floor()}';
   }
+//  var numberFormat = NumberFormat.decimalPattern();
+//  return numberFormat.format(double.tryParse(value.toStringAsFixed(fractionDigits)));
   return '${value.toStringAsFixed(fractionDigits)}';
 }
 
 String durationToString(Duration duration) {
-  if (duration == null) return '00:00:00';
+  if (duration == null || duration <= Duration.zero) return '00:00:00';
   String twoDigitsHours = toDigits(duration.inHours);
   String twoDigitMinutes = toDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
   String twoDigitSeconds = toDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
@@ -72,10 +78,21 @@ bool matchEmail(String email) {
   return regExp.hasMatch(email);
 }
 
+/// ETH address matcher
 bool matchErc20(String address) {
   if (address?.isEmpty ?? true) return false;
   var regExp = RegExp(r'^0x[0-9a-fA-F]{40}$');
   return regExp.hasMatch(address);
+}
+
+bool matchBtc(String address) {
+  if (address?.isEmpty ?? true) return false;
+  var regExp = RegExp(r'^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+  return regExp.hasMatch(address);
+}
+
+void showKeyboard() {
+  SystemChannels.textInput.invokeMethod('TextInput.show');
 }
 
 void clearFocus(BuildContext context) {
@@ -98,4 +115,11 @@ List<T> map<E, T>(List<E> src, T indexMapper(E e, int index)) {
   List<T> result = <T>[];
   src?.forEach((e) => result.add(indexMapper(e, result.length)));
   return result;
+}
+
+/// 随机 delay 一段时间，返回一个 Future<void>
+/// [max] 和 [min] 单位毫秒
+Future<void> randomWait<T>({int min = 300, int max = 600, FutureOr<T> computation()}) {
+  if (max <= min) max = min + 1;
+  return Future.delayed(Duration(milliseconds: Random().nextInt(max - min) + min), computation);
 }

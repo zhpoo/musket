@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/route/mixin/index_mixin.dart';
 
-mixin BottomNavigationBarMixin<T extends StatefulWidget> on State<T>, IndexMixin {
+mixin BottomNavigationBarMixin<T extends StatefulWidget> on IndexMixin<T> {
   NavigationBarStyle get navigationBarStyle;
 
   List<NavigationBarItem> get navigationBarItems;
@@ -10,7 +9,7 @@ mixin BottomNavigationBarMixin<T extends StatefulWidget> on State<T>, IndexMixin
   Widget get bottomNavigationBar {
     final style = navigationBarStyle ?? const NavigationBarStyle();
     final items = navigationBarItems;
-    assert(items != null && items.length > 1, 'navItemsInfo\'s length must more than 1');
+    assert(items != null && items.length > 1, "navigationBarItems's length must more than 1");
     assert(0 <= currentIndex && currentIndex < items.length);
     return BottomNavigationBar(
       elevation: style.elevation,
@@ -23,7 +22,7 @@ mixin BottomNavigationBarMixin<T extends StatefulWidget> on State<T>, IndexMixin
       iconSize: style.iconSize,
       items: items.map(buildNavigationBarItem).toList(),
       currentIndex: currentIndex,
-      onTap: onTapNavigationBar,
+      onTap: setCurrentIndex,
     );
   }
 
@@ -35,13 +34,6 @@ mixin BottomNavigationBarMixin<T extends StatefulWidget> on State<T>, IndexMixin
       icon: Image.asset(itemInfo.icon, height: style.iconSize, width: style.iconSize),
       activeIcon: Image.asset(itemInfo.activeIcon, width: style.iconSize, height: style.iconSize),
     );
-  }
-
-  void onTapNavigationBar(int index) {
-    if (currentIndex == index) return;
-    setState(() {
-      currentIndex = index;
-    });
   }
 }
 

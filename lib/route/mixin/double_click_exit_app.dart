@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:musket/common/toasts.dart';
 
 mixin DoubleClickExitAppMixin {
@@ -19,7 +19,13 @@ mixin DoubleClickExitAppMixin {
     return true;
   }
 
-  Widget willPopScope({Key key, @required Widget child}) {
+  WillPopScope willPopScope({Key key, @required Widget child}) {
     return WillPopScope(key: key, onWillPop: onWillPop, child: child);
+  }
+}
+
+extension WillPopScopeExtension on Widget {
+  WillPopScope intoDoubleTapExitApp(DoubleClickExitAppMixin doubleClickExitApp) {
+    return doubleClickExitApp.willPopScope(child: this);
   }
 }

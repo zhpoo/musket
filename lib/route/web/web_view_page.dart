@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/common/logger.dart';
+import 'package:musket/route/mixin/safe_state.dart';
 import 'package:musket/route/routes.dart';
 import 'package:musket/widget/title_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -11,7 +12,7 @@ class WebViewPage extends StatefulWidget {
   State<StatefulWidget> createState() => _FlutterWebViewPageState();
 }
 
-class _FlutterWebViewPageState extends State<WebViewPage> {
+class _FlutterWebViewPageState extends SafeState<WebViewPage> {
   bool isLoading;
 
   @override

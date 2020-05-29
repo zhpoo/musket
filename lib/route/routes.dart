@@ -28,7 +28,7 @@ class Routes {
   }
 
   static Route<T> generatePageRoute<T>(
-    settings, {
+    RouteSettings settings, {
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) {
@@ -61,5 +61,10 @@ class Routes {
   /// 关闭路由页面
   static void pop<T>(BuildContext context, [T result]) {
     Navigator.of(context).pop(result);
+  }
+
+  /// 关闭路由页面直至返回到[page]页
+  static void popUntilPage(BuildContext context, String page) {
+    Navigator.of(context).popUntil((route) => route?.settings?.name == page);
   }
 }

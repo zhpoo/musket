@@ -9,6 +9,8 @@ class BannerResource {
   String imageUrl;
 }
 
+class BannerController extends SwiperController {}
+
 class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final List<T> banners;
   final bool autoPlay;
@@ -21,6 +23,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final double dotSpace;
   final BorderRadius borderRadius;
   final double ratio;
+  final BannerController controller;
 
   const SwipeBanner({
     Key key,
@@ -35,6 +38,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.dotActiveColor = const Color(0xFFFFFFFF),
     this.dotSize = 4,
     this.dotSpace = 4,
+    this.controller,
   })  : assert(autoPlay != null),
         assert(ratio != null && ratio > 0),
         super(key: key);
@@ -55,6 +59,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Swiper.list(
           list: banners,
+          controller: controller,
           autoplay: autoPlay,
           onTap: (index) => onTap?.call(banners[index]),
           builder: (BuildContext context, dynamic data, int index) {

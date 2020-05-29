@@ -182,16 +182,22 @@ class TextInputWidget extends StatelessWidget {
     Decoration mainDecoration;
     if (hasPrefixOrSuffix) {
       if (border is UnderlineInputBorder) {
-        mainDecoration = BoxDecoration(border: Border(bottom: border.borderSide));
+        mainDecoration = BoxDecoration(
+          border: Border(bottom: border.borderSide),
+          color: color,
+        );
       } else if (border is OutlineInputBorder) {
-        mainDecoration = BoxDecoration(border: Border.fromBorderSide(border.borderSide));
+        mainDecoration = BoxDecoration(
+          border: Border.fromBorderSide(border.borderSide),
+          color: color,
+        );
       }
     }
     return Container(
       decoration: mainDecoration,
       margin: margin,
       child: column,
-      color: color,
+      color: mainDecoration == null ? color : null,
       alignment: Alignment.center,
     );
   }

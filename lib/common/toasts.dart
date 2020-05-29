@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -7,16 +8,16 @@ class ToastStyle {
   final Color backgroundColor;
   final Color textColor;
   final ToastGravity gravity;
-  final int timeInSecForIos;
+  final int timeInSecForIosWeb;
   final double fontSize;
 
   ToastStyle({
     this.backgroundColor,
     this.textColor,
     ToastGravity gravity,
-    this.timeInSecForIos = 2,
+    this.timeInSecForIosWeb = 2,
     this.fontSize = 16.0,
-  }) : gravity = gravity ?? Platform.isIOS ? ToastGravity.CENTER : null;
+  }) : gravity = gravity ?? !kIsWeb && Platform.isIOS ? ToastGravity.CENTER : null;
 }
 
 class Toasts {
@@ -37,7 +38,7 @@ class Toasts {
     return Fluttertoast.showToast(
       msg: msg,
       toastLength: longToast ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT,
-      timeInSecForIos: timeInSecForIos ?? defaultStyle?.timeInSecForIos,
+      timeInSecForIosWeb: timeInSecForIos ?? defaultStyle?.timeInSecForIosWeb,
       gravity: center == true ? ToastGravity.CENTER : defaultStyle?.gravity,
       backgroundColor: backgroundColor ?? defaultStyle?.backgroundColor,
       textColor: textColor ?? defaultStyle?.textColor,

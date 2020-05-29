@@ -33,7 +33,9 @@ class LoadingIndicator extends StatelessWidget {
     var children = <Widget>[
       CupertinoTheme(
         child: CupertinoActivityIndicator(radius: indicatorSize),
-        data: CupertinoTheme.of(context).copyWith(brightness: brightness),
+        data: CupertinoTheme.of(context).copyWith(
+          brightness: brightness ?? MediaQuery.of(context).platformBrightness ?? Brightness.dark,
+        ),
       ),
     ];
     if (text != null) {

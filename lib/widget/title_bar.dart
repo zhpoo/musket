@@ -1,17 +1,31 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:musket/common/defaults.dart';
+import 'package:musket/common/utils.dart';
+
+class TitleBarStyle {
+  final Decoration decoration;
+  final Color backgroundColor;
+  final double height;
+  final double elevation;
+  final String backAsset;
+  final TextStyle titleStyle;
+
+  const TitleBarStyle({
+    this.decoration,
+    this.backgroundColor,
+    this.backAsset,
+    this.height = 46.0,
+    this.elevation = 0,
+    this.titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+  }) : assert(height != null && height > 0);
+}
 
 class TitleBar extends StatelessWidget implements PreferredSizeWidget {
-  static double defaultHeight = 46.0;
-  static String backAsset;
-  static TextStyle defaultTitleStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 18.0,
-    color: Defaults.primaryText,
-  );
+  static TitleBarStyle defaultStyle;
+
+  static TitleBarStyle get _defaults => defaultStyle ?? const TitleBarStyle();
 
   final double height;
+  final double elevation;
   final Widget left;
   final List<Widget> right;
   final Widget title;
@@ -21,6 +35,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
   final Color backgroundColor;
+  final Decoration decoration;
 
   TitleBar({
     this.title,
@@ -30,11 +45,13 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.left,
     this.right,
     this.height,
+    this.elevation,
     this.bottom,
-  }) : preferredSize = _preferredSize(height, bottom);
+    this.decoration,
+  })  : preferredSize = _preferredSize(height, bottom);
 
   TitleBar.text({
-    String text,
+    @required String text,
     TextStyle style,
     this.centerTitle = true,
     this.automaticallyImplyLeading = false,
@@ -42,8 +59,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.left,
     this.right,
     this.height,
+    this.elevation,
     this.bottom,
-  })  : title = Text(text, style: style ?? defaultTitleStyle),
+    this.decoration,
+  })  : title = Text(text, style: style ?? _defaults.titleStyle),
         preferredSize = _preferredSize(height, bottom);
 
   /// 带返回按钮的 [TitleBar]
@@ -59,8 +78,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     double backSize: 36,
     List<Widget> rightWidgets,
     this.height,
+    this.elevation,
     this.backgroundColor,
-  })  : this.title = Text(title, style: tittleStyle ?? defaultTitleStyle),
+    this.decoration,
+  })  : this.title = Text(title, style: tittleStyle ?? _defaults.titleStyle),
         this.bottom = bottom,
         this.centerTitle = true,
         this.automaticallyImplyLeading = false,
@@ -72,10 +93,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
           return rightWidgets;
         }()),
         this.left = GestureDetector(
-          onTap: onPressBack ?? () => Navigator.of(context).pop(),
-          child: backImage == null && backAsset == null
+          onTap: onPressBack ?? () => defaultOnTapBack(context),
+          child: backImage == null && _defaults.backAsset == null
               ? Icon(Icons.arrow_back_ios, size: backSize)
-              : Image.asset(backImage ?? backAsset, width: backSize, height: backSize),
+              : Image.asset(backImage ?? _defaults.backAsset, width: backSize, height: backSize),
         ),
         preferredSize = _preferredSize(height, bottom);
 
@@ -87,15 +108,19 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       centerTitle: centerTitle,
       actions: right,
-      elevation: 0,
+      elevation: elevation ?? _defaults.elevation,
       bottom: bottom,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? _defaults.backgroundColor,
     );
-    return appBar;
+    return Container(decoration: decoration ?? _defaults.decoration, child: appBar);
   }
 
   static Size _preferredSize(double height, PreferredSizeWidget bottom) {
-    return Size.fromHeight((height == null ? defaultHeight : height) +
-        (bottom == null ? 0 : bottom.preferredSize.height));
+    return Size.fromHeight((height ?? _defaults.height) + (bottom?.preferredSize?.height ?? 0));
+  }
+
+  static void defaultOnTapBack(BuildContext context) {
+    clearFocus(context);
+    Navigator.of(context).pop();
   }
 }

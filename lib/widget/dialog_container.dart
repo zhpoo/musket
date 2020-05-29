@@ -28,6 +28,7 @@ class DialogContainer extends StatelessWidget {
   final String title;
   final TextStyle titleStyle;
   final EdgeInsetsGeometry titlePadding;
+  final EdgeInsetsGeometry contentPadding;
   final Widget content;
   final List<DialogButton> buttons;
   final BorderSide borderSide;
@@ -41,6 +42,7 @@ class DialogContainer extends StatelessWidget {
     this.buttonHeight,
     this.radius: 8,
     this.titlePadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+    this.contentPadding,
     this.background,
     this.buttons,
     this.borderSide,
@@ -63,8 +65,8 @@ class DialogContainer extends StatelessWidget {
         child: Text(title, style: titleStyle ?? _defaults.titleStyle, textAlign: TextAlign.center),
       ));
     }
-    if (content != null) {
-      children.add(content);
+    if (content != null || contentPadding != null) {
+      children.add(Container(child: content, padding: contentPadding));
     }
     if (buttons?.isNotEmpty == true) {
       List<Widget> buttonsRow = [];
