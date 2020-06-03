@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:musket/widget/scroll_behavior.dart';
 
 extension WidgetExtension on Widget {
   Container intoContainer({
@@ -160,6 +161,19 @@ extension WidgetExtension on Widget {
       maintainSize: maintainSize,
       maintainSemantics: maintainSemantics,
       maintainInteractivity: maintainInteractivity,
+    );
+  }
+
+  /// 控制 over scroll 的阴影效果
+  ScrollConfiguration intoGlowingOverScrollConfiguration({
+    Key key,
+    bool showLeading: true,
+    bool showTrailing: true,
+  }) {
+    return ScrollConfiguration(
+      key: key,
+      behavior: GlowingOverScrollBehavior(showLeading: showLeading, showTrailing: showTrailing),
+      child: this,
     );
   }
 }

@@ -31,8 +31,7 @@ bool isSameDay(dynamic day1, dynamic day2) {
   return false;
 }
 
-String parseTime(BuildContext context, int time, String languageCode,
-    {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
+String parseTime(BuildContext context, int time, String languageCode, {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
   if (time == null) {
     return '';
   }
@@ -53,11 +52,12 @@ String parseDateTime(BuildContext context, DateTime dateTime, String languageCod
 String fixedAmount(num value, [int fractionDigits = 2]) {
   value ??= 0;
   if (fractionDigits == 0) {
-    return '${value.floor()}';
+    value = value.floor();
   }
-//  var numberFormat = NumberFormat.decimalPattern();
-//  return numberFormat.format(double.tryParse(value.toStringAsFixed(fractionDigits)));
-  return '${value.toStringAsFixed(fractionDigits)}';
+  var numberFormat = NumberFormat.decimalPattern()
+    ..minimumFractionDigits = fractionDigits
+    ..maximumFractionDigits = fractionDigits;
+  return numberFormat.format(value);
 }
 
 String durationToString(Duration duration) {

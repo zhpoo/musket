@@ -9,7 +9,7 @@ abstract class UpdatableValueNotifier<T> extends ValueNotifier<T> {
   UpdatableValueNotifier() : super(null);
 
   /// 检查[value]是否存在，如果为 null，则调用 [update] 方法更新[value],如果仍然为 null，则判定值不存在
-  Future<bool> get requireExistOrTryUpdate async {
+  Future<bool> get require async {
     if (value == null) {
       await update();
       if (value == null) {

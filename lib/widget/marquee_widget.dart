@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:musket/common/utils.dart';
 
 class MarqueeWidget extends StatefulWidget {
   final IndexedWidgetBuilder itemBuilder;
@@ -19,14 +20,12 @@ class MarqueeWidget extends StatefulWidget {
 
 class _MarqueeWidgetState extends State<MarqueeWidget> {
   ScrollController scrollController;
-  FutureOr onAutoScroll;
 
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
-    onAutoScroll = (_) => autoScroll();
-    autoScroll();
+    postFrameCallback(autoScroll);
   }
 
   @override
@@ -45,8 +44,8 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
     scrollController.dispose();
   }
 
-  void autoScroll() {
-    scrollBy(widget.scrollByOffset, duration: widget.scrollByDuration).then(onAutoScroll);
+  void autoScroll([_]) {
+    scrollBy(widget.scrollByOffset, duration: widget.scrollByDuration).then(autoScroll);
   }
 
   Future<void> scrollBy(double offset, {duration: const Duration(milliseconds: 1000)}) {
