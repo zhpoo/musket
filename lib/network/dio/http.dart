@@ -199,6 +199,7 @@ void mergeDioBaseOptions({
 
 void _logger(Object object) {
   Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
+  // print('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
 }
 
 MediaType parseMediaType(File file) {

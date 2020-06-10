@@ -2,7 +2,60 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/widget/scroll_behavior.dart';
 
+/// 参数生效优先级:
+/// [top],[right],[bottom],[left]
+/// [horizontal],[vertical]
+/// [all]
+EdgeInsets edgeInsets({
+  double top,
+  double right,
+  double bottom,
+  double left,
+  double horizontal,
+  double vertical,
+  double all,
+}) {
+  double l, r, t, b;
+  l = r = t = b = all ?? 0.0;
+  if (horizontal != null) l = r = horizontal;
+  if (vertical != null) t = b = vertical;
+  if (left != null) l = left;
+  if (top != null) t = top;
+  if (right != null) r = right;
+  if (bottom != null) b = bottom;
+  return EdgeInsets.only(top: t, right: r, bottom: b, left: l);
+}
+
 extension WidgetExtension on Widget {
+  Material intoMaterial({
+    Key key,
+    MaterialType type = MaterialType.canvas,
+    double elevation = 0.0,
+    Color color,
+    Color shadowColor = const Color(0xFF000000),
+    TextStyle textStyle,
+    BorderRadiusGeometry borderRadius,
+    ShapeBorder shape,
+    bool borderOnForeground = true,
+    Clip clipBehavior = Clip.none,
+    Duration animationDuration = kThemeChangeDuration,
+  }) {
+    return Material(
+      key: key,
+      type: type,
+      elevation: elevation,
+      color: color,
+      shadowColor: shadowColor,
+      textStyle: textStyle,
+      borderRadius: borderRadius,
+      shape: shape,
+      borderOnForeground: borderOnForeground,
+      clipBehavior: clipBehavior,
+      animationDuration: animationDuration,
+      child: this,
+    );
+  }
+
   Container intoContainer({
     EdgeInsetsGeometry margin,
     EdgeInsetsGeometry padding,
@@ -176,28 +229,16 @@ extension WidgetExtension on Widget {
       child: this,
     );
   }
-}
 
-/// 参数生效优先级:
-/// [top],[right],[bottom],[left]
-/// [horizontal],[vertical]
-/// [all]
-EdgeInsets edgeInsets({
-  double top,
-  double right,
-  double bottom,
-  double left,
-  double horizontal,
-  double vertical,
-  double all,
-}) {
-  double l, r, t, b;
-  l = r = t = b = all ?? 0.0;
-  if (horizontal != null) l = r = horizontal;
-  if (vertical != null) t = b = vertical;
-  if (left != null) l = left;
-  if (top != null) t = top;
-  if (right != null) r = right;
-  if (bottom != null) b = bottom;
-  return EdgeInsets.only(top: t, right: r, bottom: b, left: l);
+  SliverToBoxAdapter intoSliverAdapter({Key key}) {
+    return SliverToBoxAdapter(child: this, key: key);
+  }
+
+  SliverFillRemaining intoSliverFillRemaining({
+    Key key,
+    bool hasScrollBody = true,
+    bool fillOverscroll = false,
+  }) {
+    return SliverFillRemaining(key: key, child: this);
+  }
 }

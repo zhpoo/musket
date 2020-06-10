@@ -7,6 +7,8 @@ const double kDefaultBannerRatio = 1.618;
 
 class BannerResource {
   String imageUrl;
+
+  BannerResource({String image}) : imageUrl = image;
 }
 
 class BannerController extends SwiperController {}
@@ -24,6 +26,8 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final BorderRadius borderRadius;
   final double ratio;
   final BannerController controller;
+  final SwiperDataBuilder itemBuilder;
+  final bool outer;
 
   const SwipeBanner({
     Key key,
@@ -32,6 +36,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.onTap,
     this.margin,
     this.borderRadius,
+    this.itemBuilder,
     this.ratio = kDefaultBannerRatio,
     this.imageBackground = const Color(0x0A000000),
     this.dotColor = const Color(0x67FFFFFF),
@@ -39,6 +44,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.dotSize = 4,
     this.dotSpace = 4,
     this.controller,
+    this.outer = false,
   })  : assert(autoPlay != null),
         assert(ratio != null && ratio > 0),
         super(key: key);
@@ -58,18 +64,20 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
         borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
         child: Swiper.list(
+          outer: outer ?? false,
           list: banners,
           controller: controller,
           autoplay: autoPlay,
           onTap: (index) => onTap?.call(banners[index]),
-          builder: (BuildContext context, dynamic data, int index) {
-            return CachedNetworkImage(
-              width: imageWidth,
-              height: height,
-              imageUrl: (data as T)?.imageUrl ?? '',
-              fit: BoxFit.cover,
-            );
-          },
+          builder: itemBuilder ??
+              (BuildContext context, dynamic data, int index) {
+                return CachedNetworkImage(
+                  width: imageWidth,
+                  height: height,
+                  imageUrl: (data as T)?.imageUrl ?? '',
+                  fit: BoxFit.cover,
+                );
+              },
           pagination: SwiperPagination(
             builder: DotSwiperPaginationBuilder(
               size: dotSize,

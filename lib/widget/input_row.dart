@@ -16,6 +16,7 @@ class InputRow extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final List<TextInputFormatter> inputFormatters;
+  final int maxLength;
 
   const InputRow({
     Key key,
@@ -26,6 +27,7 @@ class InputRow extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.inputFormatters,
+    this.maxLength,
     this.leftFlex = 1,
     this.rightFlex = 3,
     this.spacingWidth = 8,
@@ -42,6 +44,7 @@ class InputRow extends StatelessWidget {
         margin: edgeInsets(left: spacingWidth ?? 0),
         controller: controller,
         style: inputStyle,
+        maxLength: maxLength,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
         border: InputBorder.none,
