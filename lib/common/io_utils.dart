@@ -67,6 +67,14 @@ Future<File> pickImage({
   return result;
 }
 
+Future<File> retrieveLostImage() async {
+  var lostDataResponse = await ImagePicker.retrieveLostData();
+  if (lostDataResponse?.file != null && lostDataResponse.type == RetrieveType.image) {
+    return lostDataResponse.file;
+  }
+  return null;
+}
+
 Future<File> renameFileToMillis(File origin) {
   var newPath = origin.path.replaceRange(
     origin.path.lastIndexOf('/') + 1,

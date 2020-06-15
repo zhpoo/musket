@@ -35,6 +35,8 @@ class InfoWithTitle extends StatelessWidget {
   final CrossAxisAlignment verticalCrossAxisAlignment;
   final VoidCallback onTapInfo;
   final AlignmentGeometry alignment;
+  final TextAlign titleTextAlign;
+  final TextAlign infoTextAlign;
 
   const InfoWithTitle({
     this.title,
@@ -47,6 +49,8 @@ class InfoWithTitle extends StatelessWidget {
     this.onTapInfo,
     this.alignment,
     this.verticalCrossAxisAlignment,
+    this.titleTextAlign = TextAlign.center,
+    this.infoTextAlign = TextAlign.center,
   });
 
   @override
@@ -54,12 +58,12 @@ class InfoWithTitle extends StatelessWidget {
     var titleWidget = Text(
       title ?? '',
       style: titleStyle ?? _defaults.titleStyle,
-      textAlign: TextAlign.center,
+      textAlign: titleTextAlign ?? TextAlign.center,
     );
     Widget infoWidget = Text(
       info ?? '',
       style: infoStyle ?? _defaults.infoStyle,
-      textAlign: TextAlign.center,
+      textAlign: infoTextAlign ?? TextAlign.center,
     );
     if (onTapInfo != null && info.isNotEmpty) {
       infoWidget = GestureDetector(onTap: onTapInfo, child: infoWidget);

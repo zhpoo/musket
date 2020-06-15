@@ -6,7 +6,7 @@ import 'package:musket/route/routes.dart';
 import 'package:musket/widget/title_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-/// 需要 Route 参数为 Map，包含 'url', 'title'
+/// 需要 Route 参数为 Map，包含 'url', 'title','action'(Widget)
 class WebViewPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FlutterWebViewPageState();
@@ -26,11 +26,13 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
     var arguments = Routes.getArguments(context);
     String url;
     String title;
+    Widget right;
     if (arguments is Map) {
       Logger.log('arguments: $arguments');
       url = arguments['url'];
       assert(url != null);
       title = arguments['title'] ?? '';
+      right = arguments['action'] is Widget ? arguments['action'] : null;
     } else {
       return buildEmptyScaffold();
     }
@@ -40,6 +42,7 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
         context: context,
         title: title,
         onPressBack: () => Routes.pop(context),
+        right: right,
       ),
       body: Container(
         constraints: BoxConstraints.expand(width: MediaQuery.of(context).size.width),

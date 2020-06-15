@@ -28,6 +28,8 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final BannerController controller;
   final SwiperDataBuilder itemBuilder;
   final bool outer;
+  final bool loop;
+  final bool showPagination;
 
   const SwipeBanner({
     Key key,
@@ -45,8 +47,12 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.dotSpace = 4,
     this.controller,
     this.outer = false,
+    bool loop,
+    bool showPagination,
   })  : assert(autoPlay != null),
         assert(ratio != null && ratio > 0),
+        this.loop = loop ?? (banners?.length ?? 0) > 1,
+        this.showPagination = showPagination ?? (banners?.length ?? 0) > 1,
         super(key: key);
 
   @override
@@ -66,27 +72,30 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
         child: Swiper.list(
           outer: outer ?? false,
           list: banners,
+          loop: loop,
           controller: controller,
           autoplay: autoPlay,
           onTap: (index) => onTap?.call(banners[index]),
           builder: itemBuilder ??
               (BuildContext context, dynamic data, int index) {
-                return CachedNetworkImage(
+                return Image.network(
+                  (data as T)?.imageUrl ?? '',
                   width: imageWidth,
                   height: height,
-                  imageUrl: (data as T)?.imageUrl ?? '',
                   fit: BoxFit.cover,
                 );
               },
-          pagination: SwiperPagination(
-            builder: DotSwiperPaginationBuilder(
-              size: dotSize,
-              activeSize: dotSize,
-              space: dotSpace,
-              color: dotColor,
-              activeColor: dotActiveColor,
-            ),
-          ),
+          pagination: showPagination
+              ? SwiperPagination(
+                  builder: DotSwiperPaginationBuilder(
+                    size: dotSize,
+                    activeSize: dotSize,
+                    space: dotSpace,
+                    color: dotColor,
+                    activeColor: dotActiveColor,
+                  ),
+                )
+              : null,
         ),
       ),
     );

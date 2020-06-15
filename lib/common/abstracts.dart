@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:musket/route/mixin/bottom_navigation_bar_mixin.dart';
 import 'package:musket/route/mixin/double_click_exit_app.dart';
@@ -7,18 +9,36 @@ import 'package:musket/route/mixin/safe_state.dart';
 
 abstract class UpdatableValueNotifier<T> extends ValueNotifier<T> {
   UpdatableValueNotifier() : super(null);
+  bool _isUpdating = false;
+  final List<Completer<bool>> _completers = [];
 
   /// 检查[value]是否存在，如果为 null，则调用 [update] 方法更新[value],如果仍然为 null，则判定值不存在
+  @Deprecated('use required() method instead')
   Future<bool> get require async {
-    if (value == null) {
-      await update();
-      if (value == null) {
-        return false;
-      }
-    }
-    return true;
+    return required(forceUpdate: false);
   }
 
+  /// 检查[value]是否存在，如果为 null，则调用 [update] 方法更新[value],如果仍然为 null，则判定值不存在
+  Future<bool> required({bool forceUpdate = false}) async {
+    if (value != null && forceUpdate != true) return true;
+    if (_isUpdating) {
+      var c = Completer<bool>();
+      _completers.add(c);
+      return c.future;
+    }
+    _isUpdating = true;
+    await update();
+    _isUpdating = false;
+    bool result = value != null;
+    if (_completers.isNotEmpty) {
+      _completers.forEach((e) => e.complete(result));
+      _completers.clear();
+    }
+    return result;
+  }
+
+  /// 实现该方法并更新[value]
+  @protected
   Future<void> update();
 }
 

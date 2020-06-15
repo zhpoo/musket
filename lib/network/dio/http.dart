@@ -81,8 +81,7 @@ class Http {
       asFormData();
       await _createMultipartFiles();
     }
-    if (options.headers != null &&
-        options.headers[Headers.contentTypeHeader] == contentTypeFormData) {
+    if (options.headers != null && options.headers[Headers.contentTypeHeader] == contentTypeFormData) {
       data = FormData.fromMap(_params);
     } else {
       data = _params;
@@ -199,7 +198,6 @@ void mergeDioBaseOptions({
 
 void _logger(Object object) {
   Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
-  // print('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
 }
 
 MediaType parseMediaType(File file) {

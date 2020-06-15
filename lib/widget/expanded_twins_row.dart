@@ -24,6 +24,7 @@ class ExpandedTwinsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textBaseline: TextBaseline.ideographic,
       crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
       children: <Widget>[
         left.intoExpanded(flex: leftFlex),

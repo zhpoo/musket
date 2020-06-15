@@ -239,6 +239,6 @@ extension WidgetExtension on Widget {
     bool hasScrollBody = true,
     bool fillOverscroll = false,
   }) {
-    return SliverFillRemaining(key: key, child: this);
+    return SliverFillRemaining(key: key, hasScrollBody: hasScrollBody, fillOverscroll: fillOverscroll, child: this);
   }
 }

@@ -31,22 +31,31 @@ bool isSameDay(dynamic day1, dynamic day2) {
   return false;
 }
 
+@Deprecated('use [formatTime] instead')
 String parseTime(BuildContext context, int time, String languageCode, {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
+  return formatTime(time, datePattern, languageCode);
+}
+
+@Deprecated('use [formatDateTime] instead')
+String parseDateTime(BuildContext context, DateTime dateTime, String languageCode,
+    {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
+  var dateFormat = DateFormat(datePattern, languageCode);
+  return dateFormat.format(dateTime);
+}
+
+String formatTime(int time, [String pattern = 'yyyy-MM-dd HH:mm:ss', String languageCode]) {
   if (time == null) {
     return '';
   }
   if ('$time'.length == 10) {
     time *= 1000;
   }
-
   var dateTime = DateTime.fromMillisecondsSinceEpoch(time);
-  return parseDateTime(context, dateTime, languageCode, datePattern: datePattern);
+  return formatDateTime(dateTime, pattern, languageCode);
 }
 
-String parseDateTime(BuildContext context, DateTime dateTime, String languageCode,
-    {String datePattern = 'yyyy-MM-dd HH:mm:ss'}) {
-  var dateFormat = DateFormat(datePattern, languageCode);
-  return dateFormat.format(dateTime);
+String formatDateTime(DateTime dateTime, [String pattern = 'yyyy-MM-dd HH:mm:ss', String languageCode]) {
+  return DateFormat(pattern, languageCode).format(dateTime);
 }
 
 String fixedAmount(num value, [int fractionDigits = 2]) {
