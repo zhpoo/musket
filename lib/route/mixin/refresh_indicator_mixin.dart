@@ -60,9 +60,7 @@ extension RefreshIndicatorExtension on Widget {
     bool nestedFillRemaining = false,
   }) {
     return indicator.refreshIndicator(
-      child: nestedFillRemaining == true
-          ? CustomScrollView(slivers: <Widget>[SliverFillRemaining(child: this)])
-          : this,
+      child: nestedFillRemaining == true ? CustomScrollView(slivers: <Widget>[SliverFillRemaining(child: this)]) : this,
       displacement: displacement,
       color: color,
       backgroundColor: backgroundColor,

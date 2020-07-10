@@ -241,4 +241,8 @@ extension WidgetExtension on Widget {
   }) {
     return SliverFillRemaining(key: key, hasScrollBody: hasScrollBody, fillOverscroll: fillOverscroll, child: this);
   }
+
+  Opacity intoOpacity({Key key, @required double opacity, bool alwaysIncludeSemantics = false}) {
+    return Opacity(key: key, opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics, child: this);
+  }
 }
