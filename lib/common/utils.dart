@@ -81,6 +81,17 @@ String formatString(String fmt, List args) {
   return sprintf.call(fmt, args);
 }
 
+final _zhRegExp = RegExp('[\u4e00-\u9fa5]');
+
+bool matchChinese(String text) {
+  return _zhRegExp.hasMatch(text);
+}
+
+/// 返回[text]中汉字的个数
+int chineseCharactersCount(String text) {
+  return _zhRegExp.allMatches(text)?.length ?? 0;
+}
+
 bool matchEmail(String email) {
   if (email?.isEmpty ?? true) return false;
   var regExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)*$');
@@ -126,9 +137,9 @@ List<T> map<E, T>(List<E> src, T indexMapper(E e, int index)) {
   return result;
 }
 
-/// 随机 delay 一段时间，返回一个 Future<void>
+/// 随机 delay 一段时间，返回一个 Future
 /// [max] 和 [min] 单位毫秒
-Future<void> randomWait<T>({int min = 300, int max = 600, FutureOr<T> computation()}) {
+Future<T> randomWait<T>({int min = 300, int max = 600, FutureOr<T> computation()}) {
   if (max <= min) max = min + 1;
-  return Future.delayed(Duration(milliseconds: Random().nextInt(max - min) + min), computation);
+  return Future<T>.delayed(Duration(milliseconds: Random().nextInt(max - min) + min), computation);
 }

@@ -1,18 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:musket/route/web/web_view_page.dart';
 
 typedef PageGenerator = Widget Function(BuildContext context, RouteSettings settings);
+
+typedef RouteGenerator = Route<T> Function<T>(RouteSettings settings);
 
 class Routes {
   Routes._(); // no instance.
 
   static PageGenerator _pageGenerator;
 
+  static RouteGenerator _routeGenerator;
+
   static set pageGenerator(PageGenerator generator) {
     _pageGenerator = generator;
   }
 
+  static set routeGenerator(RouteGenerator generator) {
+    _routeGenerator = generator;
+  }
+
   static Widget _generatePage(BuildContext context, RouteSettings settings) {
+    if (settings.name == WebViewPage.defaultRouteName) {
+      return WebViewPage();
+    }
     if (_pageGenerator != null) {
       return _pageGenerator(context, settings);
     }
@@ -24,10 +36,10 @@ class Routes {
   /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// //
 
   static Route<T> onGenerateRoute<T>(RouteSettings settings) {
-    return generatePageRoute<T>(settings);
+    return _routeGenerator?.call(settings) ?? createCupertinoRoute<T>(settings);
   }
 
-  static Route<T> generatePageRoute<T>(
+  static Route<T> createCupertinoRoute<T>(
     RouteSettings settings, {
     bool maintainState = true,
     bool fullscreenDialog = false,
@@ -51,7 +63,7 @@ class Routes {
   /// 此处会创建路由并指定泛型类型，规避上面的报错。
   static Future<T> push<T>(BuildContext context, String routeName, [Object arguments]) {
     var settings = RouteSettings(name: routeName, arguments: arguments);
-    return Navigator.push<T>(context, generatePageRoute<T>(settings));
+    return Navigator.push<T>(context, onGenerateRoute<T>(settings));
   }
 
   static Future<dynamic> pushNamed(BuildContext context, String routeName, [Object arguments]) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musket/common/defaults.dart';
+import 'package:musket/extensions/widget_extension.dart';
 
 const _kItemTextMinHeight = 58.0;
 
@@ -18,6 +19,7 @@ class ItemText extends StatelessWidget {
   final double iconWidth;
   final double icoHeight;
   final Color color;
+  final EdgeInsetsGeometry padding;
 
   const ItemText({
     Key key,
@@ -29,6 +31,7 @@ class ItemText extends StatelessWidget {
     this.iconWidth,
     this.icoHeight,
     this.color,
+    this.padding = const EdgeInsets.all(16),
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = false,
         super(key: key);
@@ -43,6 +46,7 @@ class ItemText extends StatelessWidget {
     this.iconWidth,
     this.icoHeight,
     this.color,
+    this.padding = const EdgeInsets.all(16),
     this.minHeight: _kItemTextMinHeight,
   })  : this.withRightArrow = true,
         super(key: key);
@@ -52,7 +56,6 @@ class ItemText extends StatelessWidget {
     var children = <Widget>[];
     if (icon != null) {
       children.add(Container(
-        margin: EdgeInsets.only(left: 16),
         child: Image.asset(
           icon,
           width: iconWidth ?? defaultIconSize ?? 24,
@@ -62,7 +65,7 @@ class ItemText extends StatelessWidget {
     }
     children.add(Expanded(
       child: Container(
-        margin: const EdgeInsets.only(left: 16),
+        margin: EdgeInsets.only(left: icon != null ? 16 : 0),
         child: Text(text, style: style ?? defaultStyle),
       ),
     ));
@@ -74,7 +77,11 @@ class ItemText extends StatelessWidget {
       rights.add(Image.asset(rightArrowImage, width: 8.0, height: 14));
     }
     if (rights.isNotEmpty) {
-      children.add(Row(mainAxisSize: MainAxisSize.min, children: rights));
+      children.add(Row(
+        mainAxisSize: MainAxisSize.min,
+        children: rights,
+        crossAxisAlignment: CrossAxisAlignment.center,
+      ));
     }
     return GestureDetector(
       onTap: onTap,
@@ -82,8 +89,8 @@ class ItemText extends StatelessWidget {
       child: Container(
         color: color,
         constraints: BoxConstraints(minHeight: minHeight),
-        padding: const EdgeInsets.all(16).copyWith(left: 0),
-        child: Row(children: children),
+        padding: padding,
+        child: Row(children: children, crossAxisAlignment: CrossAxisAlignment.center),
       ),
     );
   }

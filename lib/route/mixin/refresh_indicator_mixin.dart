@@ -38,7 +38,7 @@ mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
       color: color,
       backgroundColor: backgroundColor,
       notificationPredicate: notificationPredicate,
-      onRefresh: onRefresh,
+      onRefresh: () async => await onRefresh(),
       semanticsLabel: semanticsLabel,
       semanticsValue: semanticsValue,
     );

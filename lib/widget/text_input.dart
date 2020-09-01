@@ -36,6 +36,9 @@ class TextInputWidget extends StatelessWidget {
   final bool readOnly;
   final bool enableInteractiveSelection;
   final Color color;
+  final Color fillColor;
+  final Color focusColor;
+  final Color hoverColor;
   final int minLines;
   final int maxLines;
   final int maxLength;
@@ -71,6 +74,9 @@ class TextInputWidget extends StatelessWidget {
     this.readOnly = false,
     this.enableInteractiveSelection = true,
     this.color,
+    this.fillColor = Colors.transparent,
+    this.focusColor = Colors.transparent,
+    this.hoverColor = Colors.transparent,
     this.minLines,
     this.maxLines: 1,
     this.maxLength,
@@ -84,8 +90,7 @@ class TextInputWidget extends StatelessWidget {
     var style = this.style ?? defaultStyle;
     var labelStyle = this.labelStyle ?? defaultLabelStyle;
     var hintStyle = this.hintStyle ?? defaultHintStyle;
-    bool hasPrefixOrSuffix =
-        prefix != null || prefixText != null || suffixText != null || suffix != null;
+    bool hasPrefixOrSuffix = prefix != null || prefixText != null || suffixText != null || suffix != null;
 
     var inputBorder = hasPrefixOrSuffix ? border.copyWith(borderSide: BorderSide.none) : border;
 
@@ -96,10 +101,11 @@ class TextInputWidget extends StatelessWidget {
       border: inputBorder,
       focusedBorder: inputBorder,
       enabledBorder: inputBorder,
+      disabledBorder: inputBorder,
       enabled: enabled,
-      fillColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
+      fillColor: fillColor,
+      focusColor: focusColor,
+      hoverColor: hoverColor,
 
       // 以下8个注销掉的属性，当TextField无焦点或内容为空时不会显示，
       // 官方已作为新feature等待开发，待更新后可重新实现此处逻辑
@@ -144,8 +150,7 @@ class TextInputWidget extends StatelessWidget {
             maxLines: maxLines,
             maxLength: maxLength,
             maxLengthEnforced: true,
-            buildCounter:
-                maxLength == null ? null : (context, {currentLength, maxLength, isFocused}) => null,
+            buildCounter: maxLength == null ? null : (context, {currentLength, maxLength, isFocused}) => null,
             enabled: enabled,
             readOnly: readOnly ?? false,
             obscureText: obscureText,

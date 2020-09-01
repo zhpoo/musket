@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:musket/common/logger.dart';
 
 class IoUtils {
   const IoUtils._();
@@ -82,4 +83,21 @@ Future<File> renameFileToMillis(File origin) {
     '${DateTime.now().millisecondsSinceEpoch}',
   );
   return origin.rename(newPath);
+}
+
+Future<File> pickVideo({
+  ImageSource source: ImageSource.gallery,
+  Duration maxDuration,
+}) async {
+  var pickedFile = await ImagePicker().getVideo(source: source, maxDuration: maxDuration);
+  if (pickedFile?.path?.isEmpty ?? true) return null;
+  var origin = File(pickedFile.path);
+  if (pickedFile.path.endsWith('.jpg')) {
+    /// https://github.com/flutter/flutter/issues/52419
+    /// 从相册选择视频返回文件扩展名为.jpg，修改扩展名为.mp4
+    var jpgIndex = pickedFile.path.lastIndexOf('.jpg');
+    origin = origin.renameSync(pickedFile.path.replaceRange(jpgIndex, pickedFile.path.length, '.mp4'));
+  }
+  var result = origin;
+  return result;
 }

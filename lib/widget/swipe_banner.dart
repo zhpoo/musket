@@ -30,6 +30,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final bool outer;
   final bool loop;
   final bool showPagination;
+  final int index;
 
   const SwipeBanner({
     Key key,
@@ -46,6 +47,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.dotSize = 4,
     this.dotSpace = 4,
     this.controller,
+    this.index,
     this.outer = false,
     bool loop,
     bool showPagination,
@@ -72,6 +74,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
         child: Swiper.list(
           outer: outer ?? false,
           list: banners,
+          index: index,
           loop: loop,
           controller: controller,
           autoplay: autoPlay,

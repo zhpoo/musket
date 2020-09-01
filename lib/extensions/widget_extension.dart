@@ -245,4 +245,25 @@ extension WidgetExtension on Widget {
   Opacity intoOpacity({Key key, @required double opacity, bool alwaysIncludeSemantics = false}) {
     return Opacity(key: key, opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics, child: this);
   }
+
+  SafeArea intoSafeArea({
+    Key key,
+    bool left = true,
+    bool top = true,
+    bool right = true,
+    bool bottom = true,
+    EdgeInsets minimum = EdgeInsets.zero,
+    bool maintainBottomViewPadding = false,
+  }) {
+    return SafeArea(
+      key: key,
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+      minimum: minimum,
+      maintainBottomViewPadding: maintainBottomViewPadding,
+      child: this,
+    );
+  }
 }

@@ -104,10 +104,12 @@ class Http {
 
   _createMultipartFiles() async {
     _files.forEach((key, file) {
+      var mediaType = parseMediaType(file);
+      _logger('MediaType = $mediaType');
       _params[key] = MultipartFile.fromFileSync(
         file.path,
         filename: basename(file.path),
-        contentType: parseMediaType(file),
+        contentType: mediaType,
       );
     });
   }
@@ -203,41 +205,116 @@ void _logger(Object object) {
 MediaType parseMediaType(File file) {
   if (file?.path?.isEmpty ?? true) return null;
   var extensionIndex = file.path.lastIndexOf('.');
-  if (extensionIndex == -1) return null;
-  switch (file.path.substring(extensionIndex)) {
-    case ".jpg":
-    case ".jpeg":
-    case ".jpe":
-      return MediaType("image", "jpeg");
-    case ".png":
-      return MediaType("image", "png");
-    case ".bmp":
-      return MediaType("image", "bmp");
-    case ".gif":
-      return MediaType("image", "gif");
-    case ".svg":
-    case ".svgz":
-      return MediaType("image", "svg+xml");
-    case ".json":
-      return MediaType("application", "json");
-    case ".mp3":
-      return MediaType("audio", "mpeg");
-    case ".mp4":
-      return MediaType("video", "mp4");
-    case ".htm":
-    case ".html":
-      return MediaType("text", "html");
-    case ".css":
-      return MediaType("text", "css");
-    case ".csv":
-      return MediaType("text", "csv");
-    case ".txt":
-    case ".text":
-    case ".conf":
-    case ".def":
-    case ".log":
-    case ".in":
-      return MediaType("text", "plain");
+  if (extensionIndex == -1 || extensionIndex == file.path.length - 1) return null;
+  var extension = file.path.substring(extensionIndex + 1).toLowerCase();
+
+  MediaType mediaType;
+  if (mimeTypes.containsKey(extension)) {
+    var split = mimeTypes[extension].split('/');
+    mediaType = MediaType(split[0], split[1]);
   }
-  return null;
+  return mediaType ?? MediaType('application', 'octet-stream');
 }
+
+const Map<String, String> mimeTypes = const {
+  "html": "text/html",
+  "htm": "text/html",
+  "shtml": "text/html",
+  "css": "text/css",
+  "xml": "text/xml",
+  "gif": "image/gif",
+  "jpeg": "image/jpeg",
+  "jpg": "image/jpeg",
+  "jpe": "image/jpeg",
+  "js": "application/javascript",
+  "atom": "application/atom+xml",
+  "rss": "application/rss+xml",
+  "mml": "text/mathml",
+  "txt": "text/plain",
+  "text": "text/plain",
+  "conf": "text/plain",
+  "def": "text/plain",
+  "log": "text/plain",
+  "in": "text/plain",
+  "csv": "text/csv",
+  "jad": "text/vnd.sun.j2me.app-descriptor",
+  "wml": "text/vnd.wap.wml",
+  "htc": "text/x-component",
+  "png": "image/png",
+  "tif": "image/tiff",
+  "tiff": "image/tiff",
+  "wbmp": "image/vnd.wap.wbmp",
+  "ico": "image/x-icon",
+  "jng": "image/x-jng",
+  "bmp": "image/x-ms-bmp",
+  "svg": "image/svg+xml",
+  "svgz": "image/svg+xml",
+  "webp": "image/webp",
+  "woff": "application/font-woff",
+  "jar": "application/java-archive",
+  "war": "application/java-archive",
+  "ear": "application/java-archive",
+  "json": "application/json",
+  "hqx": "application/mac-binhex40",
+  "doc": "application/msword",
+  "pdf": "application/pdf",
+  "ps": "application/postscript",
+  "eps": "application/postscript",
+  "ai": "application/postscript",
+  "rtf": "application/rtf",
+  "m3u8": "application/vnd.apple.mpegurl",
+  "xls": "application/vnd.ms-excel",
+  "eot": "application/vnd.ms-fontobject",
+  "ppt": "application/vnd.ms-powerpoint",
+  "wmlc": "application/vnd.wap.wmlc",
+  "kml": "application/vnd.google-earth.kml+xml",
+  "kmz": "application/vnd.google-earth.kmz",
+  "7z": "application/x-7z-compressed",
+  "cco": "application/x-cocoa",
+  "jardiff": "application/x-java-archive-diff",
+  "jnlp": "application/x-java-jnlp-file",
+  "run": "application/x-makeself",
+  "pl": "application/x-perl",
+  "pm": "application/x-perl",
+  "prc": "application/x-pilot",
+  "pdb": "application/x-pilot",
+  "rar": "application/x-rar-compressed",
+  "rpm": "application/x-redhat-package-manager",
+  "sea": "application/x-sea",
+  "swf": "application/x-shockwave-flash",
+  "sit": "application/x-stuffit",
+  "tcl": "application/x-tcl",
+  "tk": "application/x-tcl",
+  "der": "application/x-x509-ca-cert",
+  "pem": "application/x-x509-ca-cert",
+  "crt": "application/x-x509-ca-cert",
+  "xpi": "application/x-xpinstall",
+  "xhtml": "application/xhtml+xml",
+  "xspf": "application/xspf+xml",
+  "zip": "application/zip",
+  "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "mid": "audio/midi",
+  "midi": "audio/midi",
+  "kar": "audio/midi",
+  "mp3": "audio/mpeg",
+  "ogg": "audio/ogg",
+  "m4a": "audio/x-m4a",
+  "ra": "audio/x-realaudio",
+  "3gpp": "video/3gpp",
+  "3gp": "video/3gpp",
+  "ts": "video/mp2t",
+  "mp4": "video/mp4",
+  "mpeg": "video/mpeg",
+  "mpg": "video/mpeg",
+  "mov": "video/quicktime",
+  "webm": "video/webm",
+  "flv": "video/x-flv",
+  "m4v": "video/x-m4v",
+  "mng": "video/x-mng",
+  "asx": "video/x-ms-asf",
+  "asf": "video/x-ms-asf",
+  "wmv": "video/x-ms-wmv",
+  "avi": "video/x-msvideo"
+};

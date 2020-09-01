@@ -13,6 +13,7 @@ class InputRow extends StatelessWidget {
   final String hint;
   final TextStyle titleStyle;
   final TextStyle inputStyle;
+  final TextStyle inputHintStyle;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final List<TextInputFormatter> inputFormatters;
@@ -25,6 +26,7 @@ class InputRow extends StatelessWidget {
     String hint,
     this.titleStyle,
     this.inputStyle,
+    this.inputHintStyle,
     this.controller,
     this.keyboardType,
     this.inputFormatters,
@@ -46,6 +48,7 @@ class InputRow extends StatelessWidget {
         margin: edgeInsets(left: spacingWidth ?? 0),
         controller: controller,
         style: inputStyle,
+        hintStyle: inputHintStyle,
         maxLength: maxLength,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,

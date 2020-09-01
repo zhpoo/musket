@@ -3,15 +3,19 @@ import 'package:musket/widget/button.dart';
 
 class DialogStyle {
   final Color background;
+  final Color buttonColor;
   final TextStyle buttonStyle;
   final double buttonHeight;
+  final double screenEdge;
   final BorderSide borderSide;
   final TextStyle titleStyle;
 
   const DialogStyle({
     this.background: Colors.white,
+    this.buttonColor: Colors.transparent,
     this.buttonStyle: const TextStyle(color: Colors.black),
     this.buttonHeight: 64,
+    this.screenEdge: 24,
     this.borderSide: const BorderSide(),
     this.titleStyle: const TextStyle(),
   });
@@ -25,6 +29,7 @@ class DialogContainer extends StatelessWidget {
   final double radius;
   final double buttonHeight;
   final Color background;
+  final Gradient gradient;
   final String title;
   final TextStyle titleStyle;
   final EdgeInsetsGeometry titlePadding;
@@ -34,6 +39,7 @@ class DialogContainer extends StatelessWidget {
   final BorderSide borderSide;
   final bool showTitleBorder;
   final bool showButtonBorder;
+  final double screenEdge;
 
   const DialogContainer({
     Key key,
@@ -44,16 +50,18 @@ class DialogContainer extends StatelessWidget {
     this.titlePadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     this.contentPadding,
     this.background,
+    this.gradient,
     this.buttons,
     this.borderSide,
     this.titleStyle,
+    this.screenEdge,
     this.showTitleBorder: false,
     this.showButtonBorder: true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width - 48;
+    double width = MediaQuery.of(context).size.width - (screenEdge ?? _defaults.screenEdge) * 2;
     var children = <Widget>[];
     var borderSide = this.borderSide ?? _defaults.borderSide;
     if (title?.isNotEmpty == true) {
@@ -75,7 +83,7 @@ class DialogContainer extends StatelessWidget {
         buttonsRow.add(Expanded(
           flex: button.flex,
           child: Button(
-            color: button.color ?? background ?? _defaults.background,
+            color: button.color ?? _defaults.buttonColor,
             textStyle: button.style ?? _defaults.buttonStyle,
             text: button.text,
             onTap: button.onTap,
@@ -99,6 +107,7 @@ class DialogContainer extends StatelessWidget {
       child: Container(
         width: width,
         decoration: BoxDecoration(
+          gradient: gradient,
           color: background ?? _defaults.background,
           borderRadius: BorderRadius.circular(radius),
         ),

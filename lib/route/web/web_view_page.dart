@@ -8,6 +8,23 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 /// 需要 Route 参数为 Map，包含 'url', 'title','action'(Widget)
 class WebViewPage extends StatefulWidget {
+  static const defaultRouteName = '/webView';
+  static String routeName = defaultRouteName;
+
+  static Future<void> push(
+    context, {
+    @required String url,
+    routeName,
+    String title,
+    Widget action,
+  }) {
+    return Routes.push(context, routeName ?? WebViewPage.routeName ?? defaultRouteName, {
+      'url': url,
+      'title': title,
+      'action': action,
+    });
+  }
+
   @override
   State<StatefulWidget> createState() => _FlutterWebViewPageState();
 }

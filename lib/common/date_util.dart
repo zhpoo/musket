@@ -33,3 +33,13 @@ bool isBeforeYesterday(int time) {
   var yesterday = DateTime(yesterdayNow.year, yesterdayNow.month, yesterdayNow.day);
   return date.isBefore(yesterday);
 }
+
+bool isThisYear(int time) {
+  if (time == null) {
+    return false;
+  }
+  if ('$time'.length == 10) {
+    time *= 1000;
+  }
+  return DateTime.now().year == DateTime.fromMillisecondsSinceEpoch(time).year;
+}

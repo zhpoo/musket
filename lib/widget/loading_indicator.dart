@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:musket/widget/cupertino_indicator.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final Color backgroundColor;
@@ -30,20 +31,12 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var children = <Widget>[
-      CupertinoTheme(
-        child: CupertinoActivityIndicator(radius: indicatorSize),
-        data: CupertinoTheme.of(context).copyWith(
-          brightness: brightness ?? MediaQuery.of(context).platformBrightness ?? Brightness.dark,
-        ),
-      ),
-    ];
+    var children = <Widget>[CupertinoIndicator(brightness: brightness, radius: indicatorSize)];
     if (text != null) {
       children.add(Container(
         margin: EdgeInsets.only(top: 16.0),
         child: Text(text,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: fontSize, color: textColor, inherit: false)),
+            textAlign: TextAlign.center, style: TextStyle(fontSize: fontSize, color: textColor, inherit: false)),
       ));
     }
     return Container(

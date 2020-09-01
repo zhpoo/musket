@@ -28,13 +28,17 @@ abstract class UpdatableValueNotifier<T> extends ValueNotifier<T> {
     }
     _isUpdating = true;
     await update();
+    bool exist = value != null;
+    if (!exist && _completers.isNotEmpty) {
+      await update();
+      exist = value != null;
+    }
     _isUpdating = false;
-    bool result = value != null;
     if (_completers.isNotEmpty) {
-      _completers.forEach((e) => e.complete(result));
+      _completers.forEach((e) => e.complete(exist));
       _completers.clear();
     }
-    return result;
+    return exist;
   }
 
   /// 实现该方法并更新[value]
