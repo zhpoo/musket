@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:musket/musket.dart';
 
 /// width:height
 const double kDefaultBannerRatio = 1.618;

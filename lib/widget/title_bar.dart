@@ -8,11 +8,13 @@ class TitleBarStyle {
   final double elevation;
   final String backAsset;
   final TextStyle titleStyle;
+  final PreferredSizeWidget bottom;
 
   const TitleBarStyle({
     this.decoration,
     this.backgroundColor,
     this.backAsset,
+    this.bottom,
     this.height = 46.0,
     this.elevation = 0,
     this.titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
@@ -46,9 +48,10 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.right,
     this.height,
     this.elevation,
-    this.bottom,
+    PreferredSizeWidget bottom,
     this.decoration,
-  })  : preferredSize = _preferredSize(height, bottom);
+  })  : this.bottom = bottom ?? _defaults.bottom,
+        preferredSize = _preferredSize(height, bottom ?? _defaults.bottom);
 
   TitleBar.text({
     @required String text,
@@ -60,10 +63,11 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.right,
     this.height,
     this.elevation,
-    this.bottom,
+    PreferredSizeWidget bottom,
     this.decoration,
-  })  : title = Text(text, style: style ?? _defaults.titleStyle),
-        preferredSize = _preferredSize(height, bottom);
+  })  : this.bottom = bottom ?? _defaults.bottom,
+        title = Text(text, style: style ?? _defaults.titleStyle),
+        preferredSize = _preferredSize(height, bottom ?? _defaults.bottom);
 
   /// 带返回按钮的 [TitleBar]
   /// [right]和[rightWidgets]如果同时提供，[right]会添加到[rightWidgets]最后
@@ -82,7 +86,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.decoration,
   })  : this.title = Text(title, style: tittleStyle ?? _defaults.titleStyle),
-        this.bottom = bottom,
+        this.bottom = bottom ?? _defaults.bottom,
         this.centerTitle = true,
         this.automaticallyImplyLeading = false,
         this.right = (() {
@@ -98,7 +102,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               ? Icon(Icons.arrow_back_ios, size: backSize)
               : Image.asset(backImage ?? _defaults.backAsset, width: backSize, height: backSize),
         ),
-        preferredSize = _preferredSize(height, bottom);
+        preferredSize = _preferredSize(height, bottom ?? _defaults.bottom);
 
   @override
   Widget build(BuildContext context) {

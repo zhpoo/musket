@@ -5,16 +5,19 @@ import 'package:musket/widget/loading_indicator.dart';
 class Dialogs {
   Dialogs._();
 
+  static bool defaultCancelable;
+
   /// Note: textStyle 设置 inherit: false 解决文字下面两条黄线的问题
   static Future<T> show<T>({
     @required BuildContext context,
     @required WidgetBuilder builder,
-    cancelable: true,
+    bool cancelable,
     Color barrierColor: Colors.black54,
     AlignmentGeometry alignment: Alignment.center,
     Duration transitionDuration = const Duration(milliseconds: 250),
   }) {
     assert(builder != null);
+    cancelable ??= defaultCancelable ?? true;
     return showGeneralDialog(
       context: context,
       barrierDismissible: cancelable,
@@ -22,16 +25,15 @@ class Dialogs {
       // barrierColor cannot be transparent.
       barrierColor: barrierColor == Colors.transparent ? null : barrierColor,
       transitionDuration: transitionDuration,
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         Widget contentWidget = UnconstrainedBox(alignment: alignment, child: builder(context));
         if (cancelable) {
           return contentWidget;
         }
         return WillPopScope(onWillPop: () async => false, child: contentWidget);
       },
-      transitionBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
+      transitionBuilder:
+          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
         final CurvedAnimation fadeAnimation = CurvedAnimation(
           parent: animation,
           curve: Curves.easeInOut,
@@ -46,8 +48,8 @@ class Dialogs {
           opacity: fadeAnimation,
           child: ScaleTransition(
             child: child,
-            scale: animation.drive(Tween<double>(begin: 1.3, end: 1.0)
-                .chain(CurveTween(curve: Curves.linearToEaseOut))),
+            scale:
+                animation.drive(Tween<double>(begin: 1.3, end: 1.0).chain(CurveTween(curve: Curves.linearToEaseOut))),
           ),
         );
       },

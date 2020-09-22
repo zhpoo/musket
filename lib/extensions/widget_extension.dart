@@ -2,6 +2,28 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/widget/scroll_behavior.dart';
 
+class Edges {
+  const Edges._(); // no instance
+  static EdgeInsets insets({
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double horizontal,
+    double vertical,
+    double all,
+  }) =>
+      edgeInsets(
+        top: top,
+        right: right,
+        bottom: bottom,
+        left: left,
+        horizontal: horizontal,
+        vertical: vertical,
+        all: all,
+      );
+}
+
 /// 参数生效优先级:
 /// [top],[right],[bottom],[left]
 /// [horizontal],[vertical]

@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:musket/musket.dart';
 
+import '../extensions/list_extension.dart';
+
 /// 公共工具方法
 
 /// 转换整型数字为字符串并用 0 补位
@@ -116,7 +118,7 @@ void showKeyboard() {
 }
 
 void clearFocus(BuildContext context) {
-  FocusScope.of(context).requestFocus(FocusNode());
+  FocusScope.of(context).unfocus();
 }
 
 Widget wrapClearFocus(BuildContext context, {Widget child}) {
@@ -132,9 +134,7 @@ void postFrameCallback(VoidCallback callback) {
 }
 
 List<T> map<E, T>(List<E> src, T indexMapper(E e, int index)) {
-  List<T> result = <T>[];
-  src?.forEach((e) => result.add(indexMapper(e, result.length)));
-  return result;
+  return src?.mapIndex(indexMapper) ?? <T>[];
 }
 
 /// 随机 delay 一段时间，返回一个 Future

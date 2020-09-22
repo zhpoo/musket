@@ -10,8 +10,7 @@ mixin DoubleClickExitAppMixin {
 
   Future<bool> onWillPop() async {
     if (_lastPressBackTime == null ||
-        DateTime.now().difference(_lastPressBackTime) >
-            Duration(milliseconds: doubleClickIntervalMillis)) {
+        DateTime.now().difference(_lastPressBackTime) > Duration(milliseconds: doubleClickIntervalMillis)) {
       _lastPressBackTime = DateTime.now();
       Toasts.show(msg: pressAgainTips);
       return false;
