@@ -2,9 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/widget/scroll_behavior.dart';
 
-class Edges {
-  const Edges._(); // no instance
-  static EdgeInsets insets({
+class Edges extends EdgeInsets {
+  /// 参数生效优先级:
+  /// [top],[right],[bottom],[left]
+  /// [horizontal],[vertical]
+  /// [all]
+  const Edges({
     double top,
     double right,
     double bottom,
@@ -12,16 +15,23 @@ class Edges {
     double horizontal,
     double vertical,
     double all,
-  }) =>
-      edgeInsets(
-        top: top,
-        right: right,
-        bottom: bottom,
-        left: left,
-        horizontal: horizontal,
-        vertical: vertical,
-        all: all,
-      );
+  }) : super.only(
+          top: top ?? vertical ?? all ?? 0.0,
+          right: right ?? horizontal ?? all ?? 0.0,
+          bottom: bottom ?? vertical ?? all ?? 0.0,
+          left: left ?? horizontal ?? all ?? 0.0,
+        ); // no instance
+
+  @Deprecated('use Edges() constructor instead')
+  const Edges.insets({
+    double top,
+    double right,
+    double bottom,
+    double left,
+    double horizontal,
+    double vertical,
+    double all,
+  }) : this(top: top, right: right, bottom: bottom, left: left, horizontal: horizontal, vertical: vertical, all: all);
 }
 
 /// 参数生效优先级:
@@ -37,15 +47,15 @@ EdgeInsets edgeInsets({
   double vertical,
   double all,
 }) {
-  double l, r, t, b;
-  l = r = t = b = all ?? 0.0;
-  if (horizontal != null) l = r = horizontal;
-  if (vertical != null) t = b = vertical;
-  if (left != null) l = left;
-  if (top != null) t = top;
-  if (right != null) r = right;
-  if (bottom != null) b = bottom;
-  return EdgeInsets.only(top: t, right: r, bottom: b, left: l);
+  return Edges(
+    top: top,
+    right: right,
+    bottom: bottom,
+    left: left,
+    horizontal: horizontal,
+    vertical: vertical,
+    all: all,
+  );
 }
 
 extension WidgetExtension on Widget {

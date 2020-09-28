@@ -89,13 +89,15 @@ class Http {
     options.method = _methodToString(method);
 
     try {
-      Response<ResultData> response = await _dio.request<ResultData>(url,
-          data: method == Method.get ? null : data,
-          queryParameters: method == Method.get ? data : null,
-          cancelToken: cancelToken,
-          options: options,
-          onSendProgress: onSendProgress,
-          onReceiveProgress: onReceiveProgress);
+      Response<ResultData> response = await _dio.request<ResultData>(
+        url,
+        data: method == Method.get ? null : data,
+        queryParameters: method == Method.get ? data : null,
+        cancelToken: cancelToken,
+        options: options,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
       return response.data;
     } on DioError catch (e) {
       return _responseError(e);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:musket/common/defaults.dart';
-import 'package:musket/extensions/widget_extension.dart';
 
 const _kItemTextMinHeight = 58.0;
 
