@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:musket/musket.dart';
 
 /// width:height
 const double kDefaultBannerRatio = 1.618;
@@ -30,6 +31,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final bool loop;
   final bool showPagination;
   final int index;
+  final SwiperPlugin pagination;
 
   const SwipeBanner({
     Key key,
@@ -47,6 +49,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.dotSpace = 4,
     this.controller,
     this.index,
+    this.pagination,
     this.outer = false,
     bool loop,
     bool showPagination,
@@ -80,8 +83,8 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
           onTap: (index) => onTap?.call(banners[index]),
           builder: itemBuilder ??
               (BuildContext context, dynamic data, int index) {
-                return Image.network(
-                  (data as T)?.imageUrl ?? '',
+                return CachedNetworkImage(
+                  imageUrl: (data as T)?.imageUrl ?? '',
                   width: imageWidth,
                   height: height,
                   fit: BoxFit.cover,
@@ -89,13 +92,14 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
               },
           pagination: showPagination
               ? SwiperPagination(
-                  builder: DotSwiperPaginationBuilder(
-                    size: dotSize,
-                    activeSize: dotSize,
-                    space: dotSpace,
-                    color: dotColor,
-                    activeColor: dotActiveColor,
-                  ),
+                  builder: pagination ??
+                      DotSwiperPaginationBuilder(
+                        size: dotSize,
+                        activeSize: dotSize,
+                        space: dotSpace,
+                        color: dotColor,
+                        activeColor: dotActiveColor,
+                      ),
                 )
               : null,
         ),

@@ -11,10 +11,11 @@ class HighlightText extends StatelessWidget {
     Key key,
     this.text,
     this.highlight,
-    this.style,
+    TextStyle style,
     this.highlightColor,
     this.ignoreCase: false,
-  }) : super(key: key);
+  })  : this.style = style ?? const TextStyle(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

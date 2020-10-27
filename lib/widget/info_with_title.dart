@@ -21,7 +21,7 @@ class InfoWithTitleStyle {
         CrossAxisAlignment verticalCrossAxisAlignment: CrossAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment: CrossAxisAlignment.start,
   }) : crossAxisAlignment = crossAxisAlignment ??
-            verticalCrossAxisAlignment ??
+            verticalCrossAxisAlignment ?? // ignore: deprecated_member_use_from_same_package
             (vertical == true ? CrossAxisAlignment.start : CrossAxisAlignment.center);
 }
 
@@ -61,7 +61,8 @@ class InfoWithTitle extends StatelessWidget {
     this.infoTextAlign = TextAlign.center,
     this.expandTitle = false,
     this.expandInfo = false,
-  }) : crossAxisAlignment = crossAxisAlignment ?? verticalCrossAxisAlignment;
+  }) : crossAxisAlignment =
+            crossAxisAlignment ?? verticalCrossAxisAlignment; // ignore: deprecated_member_use_from_same_package
 
   @override
   Widget build(BuildContext context) {

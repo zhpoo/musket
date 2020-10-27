@@ -45,7 +45,7 @@ class InputRow extends StatelessWidget {
       left: Text(title ?? '', style: titleStyle, textAlign: TextAlign.left),
       right: TextInputWidget(
         hint: hint ?? '',
-        margin: edgeInsets(left: spacingWidth ?? 0),
+        margin: Edges(left: spacingWidth ?? 0),
         controller: controller,
         style: inputStyle,
         hintStyle: inputHintStyle,

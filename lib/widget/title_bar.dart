@@ -73,7 +73,8 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   /// [right]和[rightWidgets]如果同时提供，[right]会添加到[rightWidgets]最后
   TitleBar.withBack({
     @required BuildContext context,
-    @required String title,
+    @Deprecated('use "text" instead') String title,
+    @required String text,
     String backImage,
     TextStyle tittleStyle,
     VoidCallback onPressBack,
@@ -85,7 +86,9 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     this.elevation,
     this.backgroundColor,
     this.decoration,
-  })  : this.title = Text(title, style: tittleStyle ?? _defaults.titleStyle),
+  })  : assert(text == null || title == null), // ignore: deprecated_member_use_from_same_package
+        this.title = Text(title ?? text,
+            style: tittleStyle ?? _defaults.titleStyle), // ignore: deprecated_member_use_from_same_package
         this.bottom = bottom ?? _defaults.bottom,
         this.centerTitle = true,
         this.automaticallyImplyLeading = false,

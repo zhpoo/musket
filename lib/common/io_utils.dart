@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:musket/common/logger.dart';
 
 class IoUtils {
   const IoUtils._();

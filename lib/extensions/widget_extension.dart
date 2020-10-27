@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/widget/scroll_behavior.dart';
 
+/// 继承于[EdgeInsets]，提供更方便的构造函数
 class Edges extends EdgeInsets {
   /// 参数生效优先级:
   /// [top],[right],[bottom],[left]
@@ -22,7 +23,7 @@ class Edges extends EdgeInsets {
           left: left ?? horizontal ?? all ?? 0.0,
         ); // no instance
 
-  @Deprecated('use Edges() constructor instead')
+  @Deprecated('Use Edges() constructor instead')
   const Edges.insets({
     double top,
     double right,
@@ -38,6 +39,7 @@ class Edges extends EdgeInsets {
 /// [top],[right],[bottom],[left]
 /// [horizontal],[vertical]
 /// [all]
+@Deprecated('Use Edges() constructor instead')
 EdgeInsets edgeInsets({
   double top,
   double right,
@@ -142,7 +144,7 @@ extension WidgetExtension on Widget {
     double all,
   }) {
     return intoContainer(
-      margin: edgeInsets(
+      margin: Edges(
         top: top,
         bottom: bottom,
         right: right,
@@ -168,7 +170,7 @@ extension WidgetExtension on Widget {
     double all,
   }) {
     return intoContainer(
-      padding: edgeInsets(
+      padding: Edges(
         top: top,
         bottom: bottom,
         right: right,

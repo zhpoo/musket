@@ -30,7 +30,7 @@ mixin BottomNavigationBarMixin<T extends StatefulWidget> on IndexMixin<T> {
     var style = navigationBarStyle;
     return BottomNavigationBarItem(
       backgroundColor: itemInfo.backgroundColor,
-      title: Text(itemInfo.title ?? ''),
+      label: itemInfo.title ?? '',
       icon: Image.asset(itemInfo.icon, height: style.iconSize, width: style.iconSize),
       activeIcon: Image.asset(itemInfo.activeIcon, width: style.iconSize, height: style.iconSize),
     );

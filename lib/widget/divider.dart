@@ -34,12 +34,10 @@ class Line extends StatelessWidget implements PreferredSizeWidget {
 
   Line.expand({
     Key key,
-    this.color,
-    this.background,
-    this.height,
-  })  : this.margin = null,
-        preferredSize = Size.fromHeight(height ?? _defaults.height),
-        super(key: key);
+    Color color,
+    Color background,
+    double height,
+  }) : this(key: key, color: color, background: background, margin: null);
 
   final Size preferredSize;
 

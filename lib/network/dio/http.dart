@@ -43,9 +43,7 @@ class Http {
   }
 
   Http addHeader(String key, dynamic value) {
-    if (options.headers == null) {
-      options.headers = {};
-    }
+    options.headers ??= <String, dynamic>{};
     options.headers[key] = value;
     return this;
   }

@@ -72,8 +72,12 @@ class ItemText extends StatelessWidget {
     if (this.right != null) {
       rights.add(this.right);
     }
-    if (withRightArrow && rightArrowImage != null) {
-      rights.add(Image.asset(rightArrowImage, width: 8.0, height: 14));
+    if (withRightArrow) {
+      if (rightArrowImage != null) {
+        rights.add(Image.asset(rightArrowImage, width: 8.0, height: 14));
+      } else {
+        rights.add(Icon(Icons.arrow_forward_ios_rounded, size: 16));
+      }
     }
     if (rights.isNotEmpty) {
       children.add(Row(

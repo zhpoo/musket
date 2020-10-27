@@ -57,7 +57,7 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
     return Scaffold(
       appBar: TitleBar.withBack(
         context: context,
-        title: title,
+        text: title,
         onPressBack: () => Routes.pop(context),
         right: right,
       ),
@@ -83,7 +83,7 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
   Scaffold buildEmptyScaffold([String title = '', bool isLoading = false]) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: TitleBar.withBack(context: context, title: title),
+      appBar: TitleBar.withBack(context: context, text: title),
       body: isLoading ? buildLoading() : Container(),
     );
   }

@@ -46,7 +46,7 @@ class NoRecord extends StatelessWidget {
   final String text;
   final TextStyle style;
 
-  NoRecord({this.text, this.style});
+  const NoRecord({this.text, this.style});
 
   @override
   Widget build(BuildContext context) {
