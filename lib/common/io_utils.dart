@@ -4,41 +4,37 @@ import 'dart:math';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 
-class IoUtils {
-  const IoUtils._();
-
-  /// 计算文件(夹)大小，返回单位为 bytes
-  static Future<int> sizeOf(FileSystemEntity file) async {
-    if (file == null) return 0;
-    bool exists = await file.exists();
-    if (!exists) return 0;
-    if (file is File) {
-      int length = await file.length();
-      return length;
-    }
-    if (file is Directory) {
-      final List<FileSystemEntity> children = file.listSync();
-      if (children?.isEmpty ?? true) return 0;
-      int total = 0;
-      for (FileSystemEntity child in children) {
-        var size = await sizeOf(child);
-        total += size;
-      }
-      return total;
-    }
-    return 0;
+/// 计算文件(夹)大小，返回单位为 bytes
+Future<int> sizeOfFile(FileSystemEntity file) async {
+  if (file == null) return 0;
+  bool exists = await file.exists();
+  if (!exists) return 0;
+  if (file is File) {
+    int length = await file.length();
+    return length;
   }
-
-  static String renderFileSize(double value) {
-    value ??= 0;
-    List<String> unitArr = ['B', 'K', 'M', 'G'];
-    int index = 0;
-    while (value > 1024 && index < 3) {
-      index++;
-      value /= 1024;
+  if (file is Directory) {
+    final List<FileSystemEntity> children = file.listSync();
+    if (children?.isEmpty ?? true) return 0;
+    int total = 0;
+    for (FileSystemEntity child in children) {
+      var size = await sizeOfFile(child);
+      total += size;
     }
-    return '${value.toStringAsFixed(2)}${unitArr[index]}';
+    return total;
   }
+  return 0;
+}
+
+String renderFileSize(double bytes) {
+  bytes ??= 0;
+  List<String> unitArr = const ['B', 'K', 'M', 'G'];
+  int index = 0;
+  while (bytes >= 1024 && index < unitArr.length - 1) {
+    index++;
+    bytes /= 1024;
+  }
+  return '${bytes.toStringAsFixed(2)}${unitArr[index]}';
 }
 
 Future<File> pickImage({

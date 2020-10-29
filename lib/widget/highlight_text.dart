@@ -11,15 +11,14 @@ class HighlightText extends StatelessWidget {
     Key key,
     this.text,
     this.highlight,
-    TextStyle style,
+    this.style,
     this.highlightColor,
     this.ignoreCase: false,
-  })  : this.style = style ?? const TextStyle(),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String text = this.text ?? '';
+    final text = this.text ?? '';
     if ((highlight?.isEmpty ?? true) || text.isEmpty) {
       return Text(text, style: style);
     }
@@ -34,21 +33,21 @@ class HighlightText extends StatelessWidget {
         index = text.indexOf(highlight, start);
       }
       if (index < 0) {
-        spans.add(_normalSpan(text.substring(start, text.length)));
+        spans.add(_normalSpan(text.substring(start)));
         break;
       }
       if (index > start) {
         spans.add(_normalSpan(text.substring(start, index)));
       }
-      spans.add(_highlightSpan(text.substring(index, index + highlight.length)));
       start = index + highlight.length;
+      spans.add(_highlightSpan(text.substring(index, start)));
     } while (true);
 
     return Text.rich(TextSpan(children: spans));
   }
 
   TextSpan _highlightSpan(String content) {
-    return TextSpan(text: content, style: style.copyWith(color: highlightColor));
+    return TextSpan(text: content, style: (style ?? const TextStyle()).copyWith(color: highlightColor));
   }
 
   TextSpan _normalSpan(String content) {

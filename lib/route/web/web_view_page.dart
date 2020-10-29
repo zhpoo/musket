@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:musket/common/logger.dart';
 import 'package:musket/route/mixin/safe_state.dart';
 import 'package:musket/route/routes.dart';
+import 'package:musket/widget/cupertino_indicator.dart';
 import 'package:musket/widget/title_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,7 +15,7 @@ class WebViewPage extends StatefulWidget {
   static Future<void> push(
     context, {
     @required String url,
-    routeName,
+    String routeName,
     String title,
     Widget action,
   }) {
@@ -26,10 +27,10 @@ class WebViewPage extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _FlutterWebViewPageState();
+  State<StatefulWidget> createState() => _WebViewPageState();
 }
 
-class _FlutterWebViewPageState extends SafeState<WebViewPage> {
+class _WebViewPageState extends SafeState<WebViewPage> {
   bool isLoading;
 
   @override
@@ -55,12 +56,7 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
     }
 
     return Scaffold(
-      appBar: TitleBar.withBack(
-        context: context,
-        text: title,
-        onPressBack: () => Routes.pop(context),
-        right: right,
-      ),
+      appBar: TitleBar.withBack(text: title, right: right != null ? [right] : null),
       body: Container(
         constraints: BoxConstraints.expand(width: MediaQuery.of(context).size.width),
         child: IndexedStack(
@@ -83,12 +79,12 @@ class _FlutterWebViewPageState extends SafeState<WebViewPage> {
   Scaffold buildEmptyScaffold([String title = '', bool isLoading = false]) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: TitleBar.withBack(context: context, text: title),
+      appBar: AppBar(leading: const BackButton(), title: Text(title)),
       body: isLoading ? buildLoading() : Container(),
     );
   }
 
   Widget buildLoading() {
-    return Center(child: CircularProgressIndicator(strokeWidth: 2.0));
+    return Center(child: CupertinoIndicator(radius: 12));
   }
 }

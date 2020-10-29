@@ -22,42 +22,6 @@ class Edges extends EdgeInsets {
           bottom: bottom ?? vertical ?? all ?? 0.0,
           left: left ?? horizontal ?? all ?? 0.0,
         ); // no instance
-
-  @Deprecated('Use Edges() constructor instead')
-  const Edges.insets({
-    double top,
-    double right,
-    double bottom,
-    double left,
-    double horizontal,
-    double vertical,
-    double all,
-  }) : this(top: top, right: right, bottom: bottom, left: left, horizontal: horizontal, vertical: vertical, all: all);
-}
-
-/// 参数生效优先级:
-/// [top],[right],[bottom],[left]
-/// [horizontal],[vertical]
-/// [all]
-@Deprecated('Use Edges() constructor instead')
-EdgeInsets edgeInsets({
-  double top,
-  double right,
-  double bottom,
-  double left,
-  double horizontal,
-  double vertical,
-  double all,
-}) {
-  return Edges(
-    top: top,
-    right: right,
-    bottom: bottom,
-    left: left,
-    horizontal: horizontal,
-    vertical: vertical,
-    all: all,
-  );
 }
 
 extension WidgetExtension on Widget {

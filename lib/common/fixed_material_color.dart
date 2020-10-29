@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class StableMaterialColor extends MaterialColor {
-  StableMaterialColor(Color primary)
+class FixedMaterialColor extends MaterialColor {
+  FixedMaterialColor(Color primary)
       : assert(primary != null),
         super(primary.value, <int, Color>{
           50: primary,

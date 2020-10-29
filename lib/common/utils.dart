@@ -13,10 +13,11 @@ import '../extensions/list_extension.dart';
 
 /// 转换整型数字为字符串并用 0 补位
 String toDigits(int value, [int digits = 2]) {
-  if (value == null || digits < 2) return '$value';
-  int digitsOfZero = digits - '$value'.length;
-  String prefix = digitsOfZero > 0 ? '0' * digitsOfZero : '';
-  return '$prefix$value';
+  return '$value'.padLeft(digits,'0');
+  // if (value == null || digits < 2) return '$value';
+  // int digitsOfZero = digits - '$value'.length;
+  // String prefix = digitsOfZero > 0 ? '0' * digitsOfZero : '';
+  // return '$prefix$value';
 }
 
 /// 判断是否是同一天，参数[day1] 与 [day2] 类型可以是[DataTime]或者时间戳毫秒值

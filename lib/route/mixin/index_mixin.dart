@@ -11,8 +11,11 @@ mixin IndexMixin<T extends StatefulWidget> on State<T> {
 
   void setCurrentIndex(int index) {
     if (_currentIndex == index) return;
-    setState(() {
-      _currentIndex = index;
-    });
+    _currentIndex = index;
+    onIndexChanged();
+  }
+
+  void onIndexChanged() {
+    setState(() {});
   }
 }

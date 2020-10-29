@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:musket/common/base_config.dart';
 import 'package:musket/common/logger.dart';
 import 'package:path/path.dart';
 
@@ -104,12 +104,10 @@ class Http {
 
   _createMultipartFiles() async {
     _files.forEach((key, file) {
-      var mediaType = parseMediaType(file);
-      _logger('MediaType = $mediaType');
       _params[key] = MultipartFile.fromFileSync(
         file.path,
         filename: basename(file.path),
-        contentType: mediaType,
+        contentType: parseMediaType(file),
       );
     });
   }
@@ -152,7 +150,7 @@ Dio _initDioInstance() {
   dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;
   dio.options.headers[Headers.acceptHeader] = Headers.jsonContentType;
   dio.options.connectTimeout = 15 * 1000;
-  if (BaseConfig.debug) {
+  if (kDebugMode) {
     dio.interceptors.add(LogInterceptor(
       requestBody: true,
       responseHeader: false,

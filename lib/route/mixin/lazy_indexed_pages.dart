@@ -14,7 +14,7 @@ mixin LazyIndexedPagesMixin<T extends StatefulWidget> on IndexMixin<T> {
       if (_pageInitStates[i] == true) {
         result.add(pages[i]);
       } else {
-        result.add(Container());
+        result.add(const SizedBox.shrink());
       }
     }
     return result;

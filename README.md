@@ -11,3 +11,11 @@ musket:
     url: git@github.com:zhpoo/musket.git
     ref: 1.0.0
 ```
+
+Use `master` branch:
+```
+musket:
+  git:
+    url: git@github.com:zhpoo/musket.git
+    ref: master
+```
