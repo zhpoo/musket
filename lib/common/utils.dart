@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:musket/musket.dart';
 
 import '../extensions/list_extension.dart';
 
@@ -13,7 +12,7 @@ import '../extensions/list_extension.dart';
 
 /// 转换整型数字为字符串并用 0 补位
 String toDigits(int value, [int digits = 2]) {
-  return '$value'.padLeft(digits,'0');
+  return '$value'.padLeft(digits, '0');
   // if (value == null || digits < 2) return '$value';
   // int digitsOfZero = digits - '$value'.length;
   // String prefix = digitsOfZero > 0 ? '0' * digitsOfZero : '';
@@ -62,13 +61,18 @@ String formatDateTime(DateTime dateTime, [String pattern = 'yyyy-MM-dd HH:mm:ss'
 }
 
 String fixedAmount(num value, [int fractionDigits = 2]) {
+  return formatAmount(value, fractionDigits, fractionDigits);
+}
+
+String formatAmount(num value, [int minDigits = 2, int maxDigits = 2]) {
+  if (maxDigits < minDigits) maxDigits = minDigits;
   value ??= 0;
-  if (fractionDigits == 0) {
+  if (maxDigits == 0) {
     value = value.floor();
   }
   var numberFormat = NumberFormat.decimalPattern()
-    ..minimumFractionDigits = fractionDigits
-    ..maximumFractionDigits = fractionDigits;
+    ..minimumFractionDigits = minDigits
+    ..maximumFractionDigits = maxDigits;
   return numberFormat.format(value);
 }
 
@@ -78,10 +82,6 @@ String durationToString(Duration duration) {
   String twoDigitMinutes = toDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
   String twoDigitSeconds = toDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
   return '$twoDigitsHours:$twoDigitMinutes:$twoDigitSeconds';
-}
-
-String formatString(String fmt, List args) {
-  return sprintf.call(fmt, args);
 }
 
 final _zhRegExp = RegExp('[\u4e00-\u9fa5]');
