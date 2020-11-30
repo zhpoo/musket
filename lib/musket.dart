@@ -10,3 +10,4 @@ export 'package:provider/provider.dart';
 export 'package:provider/single_child_widget.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:webview_flutter/webview_flutter.dart';
+export 'package:intl/intl.dart';

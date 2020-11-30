@@ -40,18 +40,15 @@ class Dialogs {
       assert(insetPadding != null);
       assert(title != null || content != null);
       if (title != null) {
-        title = ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width - insetPadding.horizontal - titlePadding.horizontal,
-          ),
+        title = SizedBox(
+          width: MediaQuery.of(context).size.width - insetPadding.horizontal - titlePadding.horizontal,
           child: title,
         );
-      } else if (content != null) {
+      }
+      if (content != null) {
         assert(contentPadding != null);
-        content = ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width - insetPadding.horizontal - contentPadding.horizontal,
-          ),
+        content = SizedBox(
+          width: MediaQuery.of(context).size.width - insetPadding.horizontal - contentPadding.horizontal,
           child: content,
         );
       }

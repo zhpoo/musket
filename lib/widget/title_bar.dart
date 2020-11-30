@@ -41,7 +41,7 @@ class TitleBar extends AppBar {
           bottom: bottom ?? _defaults.bottom,
           centerTitle: centerTitle ?? _defaults.centerTitle,
           elevation: elevation ?? _defaults.elevation,
-          toolbarHeight: height ?? _defaults.height,
+          toolbarHeight: (height ?? _defaults.height) + (bottom?.preferredSize?.height ?? 0),
           backgroundColor: backgroundColor,
         );
 

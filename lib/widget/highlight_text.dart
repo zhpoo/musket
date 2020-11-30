@@ -4,17 +4,24 @@ class HighlightText extends StatelessWidget {
   final String text;
   final String highlight;
   final TextStyle style;
+  final TextStyle highlightStyle;
   final Color highlightColor;
   final bool ignoreCase;
 
-  const HighlightText({
+  HighlightText({
     Key key,
     this.text,
     this.highlight,
     this.style,
     this.highlightColor,
+    TextStyle highlightStyle,
     this.ignoreCase: false,
-  }) : super(key: key);
+  })  : assert(
+          highlightColor == null || highlightStyle == null,
+          'highlightColor and highlightStyle cannot be provided at same time.',
+        ),
+        highlightStyle = highlightStyle ?? style?.copyWith(color: highlightColor) ?? TextStyle(color: highlightColor),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,31 +30,32 @@ class HighlightText extends StatelessWidget {
       return Text(text, style: style);
     }
 
+    var sourceText = ignoreCase ? text.toLowerCase() : text;
+    var targetHighlight = ignoreCase ? highlight.toLowerCase() : highlight;
+
     List<TextSpan> spans = [];
     int start = 0;
-    int index;
+    int indexOfHighlight;
     do {
-      if (ignoreCase) {
-        index = text.toLowerCase().indexOf(highlight.toLowerCase(), start);
-      } else {
-        index = text.indexOf(highlight, start);
-      }
-      if (index < 0) {
+      indexOfHighlight = sourceText.indexOf(targetHighlight, start);
+      if (indexOfHighlight < 0) {
+        // no highlight
         spans.add(_normalSpan(text.substring(start)));
         break;
       }
-      if (index > start) {
-        spans.add(_normalSpan(text.substring(start, index)));
+      if (indexOfHighlight > start) {
+        // normal text before highlight
+        spans.add(_normalSpan(text.substring(start, indexOfHighlight)));
       }
-      start = index + highlight.length;
-      spans.add(_highlightSpan(text.substring(index, start)));
+      start = indexOfHighlight + highlight.length;
+      spans.add(_highlightSpan(text.substring(indexOfHighlight, start)));
     } while (true);
 
     return Text.rich(TextSpan(children: spans));
   }
 
   TextSpan _highlightSpan(String content) {
-    return TextSpan(text: content, style: (style ?? const TextStyle()).copyWith(color: highlightColor));
+    return TextSpan(text: content, style: highlightStyle);
   }
 
   TextSpan _normalSpan(String content) {
