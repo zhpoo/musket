@@ -16,7 +16,7 @@ dependencies:
   device_info: ^0.4.2+6
   package_info: ^0.4.1
   fluttertoast: ^7.0.2
-  webview_flutter: ^0.3.22+1
+  webview_flutter: ^1.0.5
   cached_network_image: ^2.2.0+1
   shared_preferences: ^0.5.8
   path_provider: ^1.6.11
