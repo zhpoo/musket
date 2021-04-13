@@ -18,6 +18,7 @@ class SliverPreferredSizeHeaderDelegate extends SliverPersistentHeaderDelegate {
     }
     if (elevation != null) {
       result = Material(
+        color: Colors.transparent,
         elevation: elevation,
         child: result,
       );

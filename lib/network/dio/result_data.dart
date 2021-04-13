@@ -6,6 +6,13 @@ class ResultData {
   Headers headers;
   int statusCode;
   bool isSuccessful;
+  DioError error;
 
-  ResultData(this.body, this.isSuccessful, this.statusCode, [this.headers]);
+  ResultData({
+    this.body,
+    this.isSuccessful,
+    this.statusCode,
+    this.headers,
+    this.error,
+  });
 }

@@ -37,4 +37,9 @@ mixin LazyIndexedPagesMixin<T extends StatefulWidget> on IndexMixin<T> {
       sizing: sizing,
     );
   }
+
+  void resetPages() {
+    _pageInitStates.clear();
+    currentIndex = 0;
+  }
 }

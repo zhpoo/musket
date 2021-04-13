@@ -54,16 +54,19 @@ Future<File> pickImage({
       percentage: (sqrt(lengthPercentage) * 100).floor(),
       quality: (lengthPercentage * 100).floor(),
     );
-    result = await renameFileToMillis(result);
-    if (temp.path != origin.path) {
+    if (temp.path != result.path) {
       await temp.delete();
     }
+    result = await renameFileToMillis(result);
     if (breaker++ > 9) break;
   }
   return result;
 }
 
 Future<File> retrieveLostImage() async {
+  if (!Platform.isAndroid) {
+    return null;
+  }
   var lostDataResponse = await ImagePicker.retrieveLostData();
   if (lostDataResponse?.file != null && lostDataResponse.type == RetrieveType.image) {
     return lostDataResponse.file;
@@ -91,7 +94,7 @@ Future<File> pickVideo({
     /// https://github.com/flutter/flutter/issues/52419
     /// 从相册选择视频返回文件扩展名为.jpg，修改扩展名为.mp4
     var jpgIndex = pickedFile.path.lastIndexOf('.jpg');
-    origin = origin.renameSync(pickedFile.path.replaceRange(jpgIndex, pickedFile.path.length, '.mp4'));
+    origin = await origin.rename(pickedFile.path.replaceRange(jpgIndex, pickedFile.path.length, '.mp4'));
   }
   var result = origin;
   return result;

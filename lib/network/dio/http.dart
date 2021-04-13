@@ -122,7 +122,12 @@ class Http {
     if (e.type == DioErrorType.CONNECT_TIMEOUT || e.type == DioErrorType.RECEIVE_TIMEOUT) {
       errorResponse.statusCode = Code.networkTimeout;
     }
-    return ResultData(e.message, false, errorResponse.statusCode);
+    return ResultData(
+      body: e.message,
+      isSuccessful: false,
+      statusCode: errorResponse.statusCode,
+      error: e,
+    );
   }
 }
 

@@ -4,9 +4,14 @@ import 'result_data.dart';
 
 class ResponseInterceptor extends InterceptorsWrapper {
   @override
-  onResponse(Response response) async {
+  Future onResponse(Response response) async {
     bool isSuccessful = response.statusCode >= 200 && response.statusCode < 300;
-    return new ResultData(response.data, isSuccessful, response.statusCode, response.headers);
+    return ResultData(
+      body: response.data,
+      isSuccessful: isSuccessful,
+      statusCode: response.statusCode,
+      headers: response.headers,
+    );
   }
 
   @override

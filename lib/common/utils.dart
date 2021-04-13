@@ -60,6 +60,10 @@ String formatDateTime(DateTime dateTime, [String pattern = 'yyyy-MM-dd HH:mm:ss'
   return DateFormat(pattern, languageCode).format(dateTime);
 }
 
+String formatNumber(int value) {
+  return formatAmount(value, 0, 0);
+}
+
 String fixedAmount(num value, [int fractionDigits = 2]) {
   return formatAmount(value, fractionDigits, fractionDigits);
 }

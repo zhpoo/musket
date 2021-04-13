@@ -12,12 +12,12 @@ class ToastStyle {
   final double fontSize;
 
   ToastStyle({
-    this.backgroundColor,
-    this.textColor,
+    this.backgroundColor = Colors.white,
+    this.textColor = Colors.black,
     ToastGravity gravity,
     this.timeInSecForIosWeb = 2,
     this.fontSize = 16.0,
-  }) : gravity = gravity ?? !kIsWeb && Platform.isIOS ? ToastGravity.CENTER : null;
+  }) : gravity = gravity ?? (!kIsWeb && Platform.isIOS ? ToastGravity.CENTER : null);
 }
 
 class Toasts {
@@ -25,7 +25,7 @@ class Toasts {
 
   Toasts._();
 
-  static show({
+  static Future<bool> show({
     @required String msg,
     bool longToast = false,
     bool center,
