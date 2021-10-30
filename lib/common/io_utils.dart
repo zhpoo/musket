@@ -63,11 +63,11 @@ Future<File> pickImage({
   return result;
 }
 
-Future<File> retrieveLostImage() async {
+Future<XFile> retrieveLostImage(ImagePicker imagePicker) async {
   if (!Platform.isAndroid) {
     return null;
   }
-  var lostDataResponse = await ImagePicker.retrieveLostData();
+  var lostDataResponse = await imagePicker.retrieveLostData();
   if (lostDataResponse?.file != null && lostDataResponse.type == RetrieveType.image) {
     return lostDataResponse.file;
   }

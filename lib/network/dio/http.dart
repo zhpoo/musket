@@ -117,9 +117,12 @@ class Http {
     if (e.response != null) {
       errorResponse = e.response;
     } else {
-      errorResponse = Response(statusCode: Code.failed, request: e.request);
+      errorResponse = Response(
+        statusCode: Code.failed,
+        requestOptions: e.requestOptions,
+      );
     }
-    if (e.type == DioErrorType.CONNECT_TIMEOUT || e.type == DioErrorType.RECEIVE_TIMEOUT) {
+    if (e.type == DioErrorType.connectTimeout || e.type == DioErrorType.receiveTimeout) {
       errorResponse.statusCode = Code.networkTimeout;
     }
     return ResultData(
@@ -184,7 +187,7 @@ void mergeDioBaseOptions({
   bool followRedirects,
   int maxRedirects,
 }) {
-  _dio.options = _dio.options.merge(
+  _dio.options = _dio.options.copyWith(
     method: method == null ? null : _methodToString(method),
     baseUrl: baseUrl,
     queryParameters: queryParameters,
