@@ -1,7 +1,6 @@
 name: musket
 description: Custom flutter development package by Roc Penn.
 version: 0.0.1
-author: Roc Penn
 homepage: https://github.com/zhpoo/roc
 
 environment:
@@ -12,18 +11,18 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  dio: ^3.0.10
+  dio: ^4.0.1
   device_info: ^2.0.0
   package_info: ^2.0.0
-  fluttertoast: 7.0.2
-  webview_flutter: ^2.0.2
+  fluttertoast: ^8.0.8
+  webview_flutter: ^2.1.2
   cached_network_image: ^2.2.0+1
   shared_preferences: ^2.0.5
   path_provider: ^2.0.1
-  provider: ^5.0.0
+  provider: ^6.0.1
   flutter_swiper: ^1.1.6
-  flutter_staggered_grid_view: ^0.3.2
-  image_picker: ^0.6.7+12
+  flutter_staggered_grid_view: ^0.4.1
+  image_picker: ^0.8.4+4
   flutter_native_image: ^0.0.5+3
 
 dev_dependencies:
