@@ -19,6 +19,7 @@ class Http {
   Map<String, File> _files = {};
   Map<String, dynamic> _params = {};
   HttpOptions options = HttpOptions();
+  dynamic _body;
 
   HttpCancelToken cancelToken;
   HttpProgressCallback onSendProgress;
@@ -72,6 +73,11 @@ class Http {
     return this;
   }
 
+  Http body(dynamic body) {
+    this._body = body;
+    return this;
+  }
+
   /// see [ResponseInterceptor]
   Future<ResultData> call<T>() async {
     var data;
@@ -79,7 +85,9 @@ class Http {
       asFormData();
       await _createMultipartFiles();
     }
-    if (options.headers != null && options.headers[Headers.contentTypeHeader] == contentTypeFormData) {
+    if (method != Method.get && _body != null) {
+      data = _body;
+    } else if (options.headers != null && options.headers[Headers.contentTypeHeader] == contentTypeFormData) {
       data = FormData.fromMap(_params);
     } else {
       data = _params;
