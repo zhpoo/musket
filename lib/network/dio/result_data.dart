@@ -15,4 +15,6 @@ class ResultData {
     this.headers,
     this.error,
   });
+
+  String get failMessage => error?.message?.isNotEmpty == true ? error.message : '$body';
 }
