@@ -14,6 +14,11 @@ mixin BaseConfig {
     return packageInfo.version;
   }
 
+  Future<int> get appVersionCode async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return int.tryParse(packageInfo.buildNumber);
+  }
+
   Future<String> get appBundleId async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.packageName;
@@ -74,9 +79,12 @@ mixin BaseConfig {
     if (Platform.isAndroid) {
       var android = await androidDeviceInfo;
       if (android == null) {
-        return '${DateTime.now().millisecondsSinceEpoch}:unknown device info';
+        return '${DateTime
+            .now()
+            .millisecondsSinceEpoch}:unknown device info';
       }
-      return '$platform|${android.manufacturer}|${android.board}|${android.device}|${android.hardware}|${android.product}|${android.model}|${android.version?.release}|${android.androidId}';
+      return '$platform|${android.manufacturer}|${android.board}|${android.device}|${android.hardware}|${android
+          .product}|${android.model}|${android.version?.release}|${android.androidId}';
     }
     return '${Platform.operatingSystem} not support yet.';
   }

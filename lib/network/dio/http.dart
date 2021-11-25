@@ -161,6 +161,8 @@ String _methodToString(Method method) {
 
 final _dio = _initDioInstance();
 
+Dio get globalDio => _dio;
+
 Dio _initDioInstance() {
   Dio dio = Dio();
   dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;

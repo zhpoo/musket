@@ -13,3 +13,4 @@ export 'package:webview_flutter/webview_flutter.dart';
 export 'package:intl/intl.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:image_picker/image_picker.dart';
+export 'package:dio/dio.dart';
