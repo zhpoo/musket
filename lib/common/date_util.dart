@@ -1,9 +1,6 @@
 import 'package:musket/common/utils.dart';
 
 bool isToday(int time) {
-  if (time == null) {
-    return false;
-  }
   if ('$time'.length == 10) {
     time *= 1000;
   }
@@ -11,9 +8,6 @@ bool isToday(int time) {
 }
 
 bool isYesterday(int time) {
-  if (time == null) {
-    return false;
-  }
   if ('$time'.length == 10) {
     time *= 1000;
   }
@@ -21,9 +15,6 @@ bool isYesterday(int time) {
 }
 
 bool isBeforeYesterday(int time) {
-  if (time == null) {
-    return true;
-  }
   if ('$time'.length == 10) {
     // time is in seconds.
     time *= 1000;
@@ -35,9 +26,6 @@ bool isBeforeYesterday(int time) {
 }
 
 bool isThisYear(int time) {
-  if (time == null) {
-    return false;
-  }
   if ('$time'.length == 10) {
     time *= 1000;
   }

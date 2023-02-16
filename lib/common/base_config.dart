@@ -2,19 +2,24 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 
 mixin BaseConfig {
   static const bool debug = !kReleaseMode;
 
-  static String get platform => Platform.isAndroid ? 'android' : Platform.isIOS ? 'ios' : 'web';
+  static String get platform => Platform.isAndroid
+      ? 'android'
+      : Platform.isIOS
+          ? 'ios'
+          : 'web';
 
   Future<String> get appVersion async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
 
-  Future<int> get appVersionCode async {
+  Future<int?> get appVersionCode async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return int.tryParse(packageInfo.buildNumber);
   }
@@ -24,17 +29,17 @@ mixin BaseConfig {
     return packageInfo.packageName;
   }
 
-  Future<String> get osVersion async {
+  Future<String?> get osVersion async {
     if (Platform.isAndroid) {
       var deviceInfo = await androidDeviceInfo;
-      return deviceInfo?.version?.release;
+      return deviceInfo?.version.release;
     } else {
       var deviceInfo = await iosDeviceInfo;
       return deviceInfo?.systemVersion;
     }
   }
 
-  Future<String> get deviceId async {
+  Future<String?> get deviceId async {
     if (Platform.isAndroid) {
       var deviceInfo = await androidDeviceInfo;
       return deviceInfo?.androidId;
@@ -44,7 +49,7 @@ mixin BaseConfig {
     }
   }
 
-  Future<String> get deviceModel async {
+  Future<String?> get deviceModel async {
     if (Platform.isAndroid) {
       var deviceInfo = await androidDeviceInfo;
       return deviceInfo?.model;
@@ -54,17 +59,17 @@ mixin BaseConfig {
     }
   }
 
-  Future<String> get manufacturer async {
+  Future<String?> get manufacturer async {
     if (Platform.isAndroid) {
       var deviceInfo = await androidDeviceInfo;
       return deviceInfo?.manufacturer;
     } else {
       var deviceInfo = await iosDeviceInfo;
-      return deviceInfo?.utsname?.machine;
+      return deviceInfo?.utsname.machine;
     }
   }
 
-  Future<String> get brand async {
+  Future<String?> get brand async {
     if (Platform.isAndroid) {
       var deviceInfo = await androidDeviceInfo;
       return deviceInfo?.brand;
@@ -79,34 +84,31 @@ mixin BaseConfig {
     if (Platform.isAndroid) {
       var android = await androidDeviceInfo;
       if (android == null) {
-        return '${DateTime
-            .now()
-            .millisecondsSinceEpoch}:unknown device info';
+        return '${DateTime.now().millisecondsSinceEpoch}:unknown device info';
       }
-      return '$platform|${android.manufacturer}|${android.board}|${android.device}|${android.hardware}|${android
-          .product}|${android.model}|${android.version?.release}|${android.androidId}';
+      return '$platform|${android.manufacturer}|${android.board}|${android.device}|${android.hardware}|${android.product}|${android.model}|${android.version.release}|${android.androidId}';
     }
     return '${Platform.operatingSystem} not support yet.';
   }
 
-  Future<AndroidDeviceInfo> get androidDeviceInfo async {
+  Future<AndroidDeviceInfo?> get androidDeviceInfo async {
     if (!Platform.isAndroid) return null;
     try {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       var androidDeviceInfo = await deviceInfoPlugin.androidInfo;
       return androidDeviceInfo;
-    } catch (PlatformException) {
+    } on PlatformException {
       return null;
     }
   }
 
-  Future<IosDeviceInfo> get iosDeviceInfo async {
+  Future<IosDeviceInfo?> get iosDeviceInfo async {
     if (!Platform.isIOS) return null;
     try {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       var iosDeviceInfo = await deviceInfoPlugin.iosInfo;
       return iosDeviceInfo;
-    } catch (PlatformException) {
+    } on PlatformException {
       return null;
     }
   }

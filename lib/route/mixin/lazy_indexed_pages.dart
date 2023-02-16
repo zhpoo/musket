@@ -7,7 +7,7 @@ mixin LazyIndexedPagesMixin<T extends StatefulWidget> on IndexMixin<T> {
   List<Widget> get pages;
 
   List<Widget> get lazyPages {
-    if ((pages?.isEmpty ?? true) || currentIndex < 0 || currentIndex >= pages.length) return pages;
+    if (pages.isEmpty || currentIndex < 0 || currentIndex >= pages.length) return pages;
     _pageInitStates[currentIndex] = true;
     final result = <Widget>[];
     for (var i = 0; i < pages.length; i++) {
@@ -23,9 +23,9 @@ mixin LazyIndexedPagesMixin<T extends StatefulWidget> on IndexMixin<T> {
   IndexedStack get lazyPagesIndexedStack => lazyIndexedStack();
 
   IndexedStack lazyIndexedStack({
-    Key key,
+    Key? key,
     AlignmentGeometry alignment = AlignmentDirectional.topStart,
-    TextDirection textDirection,
+    TextDirection? textDirection,
     StackFit sizing = StackFit.loose,
   }) {
     return IndexedStack(

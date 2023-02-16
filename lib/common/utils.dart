@@ -45,10 +45,7 @@ String parseDateTime(BuildContext context, DateTime dateTime, String languageCod
   return dateFormat.format(dateTime);
 }
 
-String formatTime(int time, [String pattern = 'yyyy-MM-dd HH:mm:ss', String languageCode]) {
-  if (time == null) {
-    return '';
-  }
+String formatTime(int time, [String pattern = 'yyyy-MM-dd HH:mm:ss', String? languageCode]) {
   if ('$time'.length == 10) {
     time *= 1000;
   }
@@ -56,7 +53,7 @@ String formatTime(int time, [String pattern = 'yyyy-MM-dd HH:mm:ss', String lang
   return formatDateTime(dateTime, pattern, languageCode);
 }
 
-String formatDateTime(DateTime dateTime, [String pattern = 'yyyy-MM-dd HH:mm:ss', String languageCode]) {
+String formatDateTime(DateTime dateTime, [String pattern = 'yyyy-MM-dd HH:mm:ss', String? languageCode]) {
   return DateFormat(pattern, languageCode).format(dateTime);
 }
 
@@ -70,7 +67,6 @@ String fixedAmount(num value, [int fractionDigits = 2]) {
 
 String formatAmount(num value, [int minDigits = 2, int maxDigits = 2]) {
   if (maxDigits < minDigits) maxDigits = minDigits;
-  value ??= 0;
   if (maxDigits == 0) {
     value = value.floor();
   }
@@ -81,7 +77,7 @@ String formatAmount(num value, [int minDigits = 2, int maxDigits = 2]) {
 }
 
 String durationToString(Duration duration) {
-  if (duration == null || duration <= Duration.zero) return '00:00:00';
+  if (duration <= Duration.zero) return '00:00:00';
   String twoDigitsHours = toDigits(duration.inHours);
   String twoDigitMinutes = toDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
   String twoDigitSeconds = toDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
@@ -96,24 +92,24 @@ bool matchChinese(String text) {
 
 /// 返回[text]中汉字的个数
 int chineseCharactersCount(String text) {
-  return _zhRegExp.allMatches(text)?.length ?? 0;
+  return _zhRegExp.allMatches(text).length;
 }
 
 bool matchEmail(String email) {
-  if (email?.isEmpty ?? true) return false;
+  if (email.isEmpty) return false;
   var regExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-_]+(\.[a-zA-Z0-9-_]+)*$');
   return regExp.hasMatch(email);
 }
 
 /// ETH address matcher
 bool matchErc20(String address) {
-  if (address?.isEmpty ?? true) return false;
+  if (address.isEmpty) return false;
   var regExp = RegExp(r'^0x[0-9a-fA-F]{40}$');
   return regExp.hasMatch(address);
 }
 
 bool matchBtc(String address) {
-  if (address?.isEmpty ?? true) return false;
+  if (address.isEmpty) return false;
   var regExp = RegExp(r'^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
   return regExp.hasMatch(address);
 }
@@ -126,7 +122,7 @@ void clearFocus(BuildContext context) {
   FocusScope.of(context).unfocus();
 }
 
-Widget wrapClearFocus(BuildContext context, {Widget child}) {
+Widget wrapClearFocus(BuildContext context, {Widget? child}) {
   return GestureDetector(
     behavior: HitTestBehavior.translucent,
     onTap: () => clearFocus(context),
@@ -139,12 +135,12 @@ void postFrameCallback(VoidCallback callback) {
 }
 
 List<T> map<E, T>(List<E> src, T indexMapper(E e, int index)) {
-  return src?.mapIndex(indexMapper) ?? <T>[];
+  return src.mapIndex(indexMapper);
 }
 
 /// 随机 delay 一段时间，返回一个 Future
 /// [max] 和 [min] 单位毫秒
-Future<T> randomWait<T>({int min = 300, int max = 600, FutureOr<T> computation()}) {
+Future<T> randomWait<T>({int min = 300, int max = 600, FutureOr<T> computation()?}) {
   if (max <= min) max = min + 1;
   return Future<T>.delayed(Duration(milliseconds: Random().nextInt(max - min) + min), computation);
 }

@@ -5,9 +5,6 @@ extension LocaleExtension on Locale {
     if (target == this) {
       return true;
     }
-    if (target == null) {
-      return false;
-    }
     if (target.languageCode != this.languageCode) {
       return false;
     }
@@ -21,11 +18,11 @@ extension LocaleExtension on Locale {
   }
 }
 
-Locale findCompatibleLocale(List<Locale> supportLocales, Locale target) {
-  return supportLocales?.firstWhere((locale) => locale == target, orElse: () {
+Locale findCompatibleLocale(List<Locale> supportLocales, Locale target, {Locale orElse()?}) {
+  return supportLocales.firstWhere((locale) => locale == target, orElse: () {
     return supportLocales.firstWhere((locale) => locale.isCompatible(target, script: true), orElse: () {
       return supportLocales.firstWhere((locale) => locale.isCompatible(target, country: true), orElse: () {
-        return supportLocales.firstWhere((locale) => locale.isCompatible(target), orElse: () => null);
+        return supportLocales.firstWhere((locale) => locale.isCompatible(target), orElse: orElse);
       });
     });
   });

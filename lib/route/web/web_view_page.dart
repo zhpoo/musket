@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/common/logger.dart';
+import 'package:musket/musket.dart';
 import 'package:musket/route/mixin/safe_state.dart';
 import 'package:musket/route/routes.dart';
 import 'package:musket/widget/cupertino_indicator.dart';
 import 'package:musket/widget/title_bar.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 /// 需要 Route 参数为 Map，包含 'url', 'title','action'(Widget)
 class WebViewPage extends StatefulWidget {
@@ -14,13 +13,13 @@ class WebViewPage extends StatefulWidget {
 
   static Future<void> push(
     context, {
-    @required String url,
-    String routeName,
-    String title,
+    required String url,
+    String? routeName,
+    String? title,
     bool titleWithBack = true,
-    Widget action,
+    Widget? action,
   }) {
-    return Routes.push(context, routeName ?? WebViewPage.routeName ?? defaultRouteName, {
+    return Routes.push(context, routeName ?? WebViewPage.routeName, {
       'url': url,
       'title': title,
       'action': action,
@@ -28,10 +27,10 @@ class WebViewPage extends StatefulWidget {
     });
   }
 
-  final Map<String, dynamic> arguments;
+  final Map<String, dynamic>? arguments;
 
   const WebViewPage({
-    Key key,
+    Key? key,
     this.arguments,
   }) : super(key: key);
 
@@ -40,22 +39,34 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends SafeState<WebViewPage> {
-  bool isLoading;
+  late bool isLoading;
+  late WebViewController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = WebViewController();
     isLoading = true;
+    initController();
+  }
+
+  void initController() {
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller.setNavigationDelegate(NavigationDelegate(
+      onPageFinished: (url) => setState(() => isLoading = false),
+    ));
+
+    controller.loadRequest(Uri.parse(widget.arguments?['url'] ?? ''));
   }
 
   @override
   Widget build(BuildContext context) {
-    var arguments = widget.arguments ?? Routes.getArguments(context);
-    String url;
+    Object? arguments = widget.arguments ?? Routes.getArguments(context);
+    String? url;
     String title;
-    Widget right;
+    Widget? right;
     bool titleWithBack;
-    if (arguments is Map) {
+    if (arguments != null && arguments is Map) {
       Logger.log('arguments: $arguments');
       url = arguments['url'];
       assert(url != null);
@@ -77,13 +88,7 @@ class _WebViewPageState extends SafeState<WebViewPage> {
         child: IndexedStack(
           index: isLoading ? 1 : 0,
           children: <Widget>[
-            WebView(
-              initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
-              onPageFinished: (url) => setState(() {
-                isLoading = false;
-              }),
-            ),
+            WebViewWidget(controller: WebViewController()),
             buildLoading(),
           ],
         ),

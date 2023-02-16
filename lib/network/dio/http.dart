@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:musket/common/logger.dart';
+import 'package:musket/network/dio/mime_types.dart';
 import 'package:path/path.dart';
 
 import 'code.dart';
@@ -21,31 +22,23 @@ class Http {
   HttpOptions options = HttpOptions();
   dynamic _body;
 
-  HttpCancelToken cancelToken;
-  HttpProgressCallback onSendProgress;
-  HttpProgressCallback onReceiveProgress;
+  HttpCancelToken? cancelToken;
+  HttpProgressCallback? onSendProgress;
+  HttpProgressCallback? onReceiveProgress;
 
-  Http({this.method, this.url});
+  Http({required this.method, required this.url});
 
-  Http.get([this.url]) {
-    method = Method.get;
-  }
+  Http.get([String url = '']) : this(method: Method.get, url: url);
 
-  Http.post([this.url]) {
-    method = Method.post;
-  }
+  Http.post([String url = '']) : this(method: Method.post, url: url);
 
-  Http.delete([this.url]) {
-    method = Method.delete;
-  }
+  Http.delete([String url = '']) : this(method: Method.delete, url: url);
 
-  Http.put([this.url]) {
-    method = Method.put;
-  }
+  Http.put([String url = '']) : this(method: Method.put, url: url);
 
   Http addHeader(String key, dynamic value) {
     options.headers ??= <String, dynamic>{};
-    options.headers[key] = value;
+    options.headers![key] = value;
     return this;
   }
 
@@ -79,7 +72,7 @@ class Http {
   }
 
   /// see [ResponseInterceptor]
-  Future<ResultData> call<T>() async {
+  Future<ResultData?> call<T>() async {
     var data;
     if (_files.isNotEmpty) {
       asFormData();
@@ -87,7 +80,7 @@ class Http {
     }
     if (method != Method.get && _body != null) {
       data = _body;
-    } else if (options.headers != null && options.headers[Headers.contentTypeHeader] == contentTypeFormData) {
+    } else if (options.headers?[Headers.contentTypeHeader] == contentTypeFormData) {
       data = FormData.fromMap(_params);
     } else {
       data = _params;
@@ -95,7 +88,7 @@ class Http {
     options.method = _methodToString(method);
 
     try {
-      Response<ResultData> response = await _dio.request<ResultData>(
+      Response<ResultData?> response = await dioHttp.request<ResultData>(
         url,
         data: method == Method.get ? null : data,
         queryParameters: method == Method.get ? data : null,
@@ -123,15 +116,15 @@ class Http {
   static ResultData _responseError(DioError e) {
     Response errorResponse;
     if (e.response != null) {
-      errorResponse = e.response;
+      errorResponse = e.response!;
     } else {
       errorResponse = Response(
         statusCode: Code.failed,
         requestOptions: e.requestOptions,
       );
-    }
-    if (e.type == DioErrorType.connectTimeout || e.type == DioErrorType.receiveTimeout) {
-      errorResponse.statusCode = Code.networkTimeout;
+      if (e.type == DioErrorType.connectTimeout || e.type == DioErrorType.receiveTimeout) {
+        errorResponse.statusCode = Code.networkTimeout;
+      }
     }
     return ResultData(
       body: e.message,
@@ -159,15 +152,26 @@ String _methodToString(Method method) {
   }
 }
 
-final _dio = _initDioInstance();
+Dio? _dio;
 
-Dio get globalDio => _dio;
+Dio get dioHttp {
+  if (_dio == null) {
+    throw 'please call initHttp() first';
+  }
+  return _dio!;
+}
 
-Dio _initDioInstance() {
+void initHttp({
+  TypeAdapter? typeAdapter,
+}) {
+  if (_dio != null) {
+    return;
+  }
   Dio dio = Dio();
   dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;
   dio.options.headers[Headers.acceptHeader] = Headers.jsonContentType;
-  dio.options.connectTimeout = 15 * 1000;
+  // dio.options.connectTimeout = const Duration(seconds: 15);
+  dio.options.connectTimeout = 15000;
   if (kDebugMode) {
     dio.interceptors.add(LogInterceptor(
       requestBody: true,
@@ -177,27 +181,29 @@ Dio _initDioInstance() {
     ));
   }
   // ResponseInterceptor 需要放到 LogInterceptor 后面，否则打印不出 response 的 log
-  dio.interceptors.add(ResponseInterceptor());
-  return dio;
+  if (typeAdapter != null) {
+    dio.interceptors.add(ResponseInterceptor(typeAdapter: typeAdapter));
+  }
+  _dio = dio;
 }
 
 void mergeDioBaseOptions({
-  String baseUrl,
-  Method method,
-  Map<String, dynamic> queryParameters,
-  String path,
-  int connectTimeout,
-  int receiveTimeout,
-  int sendTimeout,
-  Map<String, dynamic> extra,
-  Map<String, dynamic> headers,
-  String contentType,
-  bool validateStatus(int status),
-  bool receiveDataWhenStatusError,
-  bool followRedirects,
-  int maxRedirects,
+  String? baseUrl,
+  Method? method,
+  Map<String, dynamic>? queryParameters,
+  String? path,
+  int? connectTimeout,
+  int? receiveTimeout,
+  int? sendTimeout,
+  Map<String, dynamic>? extra,
+  Map<String, dynamic>? headers,
+  String? contentType,
+  ValidateStatus? validateStatus,
+  bool? receiveDataWhenStatusError,
+  bool? followRedirects,
+  int? maxRedirects,
 }) {
-  _dio.options = _dio.options.copyWith(
+  dioHttp.options = dioHttp.options.copyWith(
     method: method == null ? null : _methodToString(method),
     baseUrl: baseUrl,
     queryParameters: queryParameters,
@@ -219,118 +225,15 @@ void _logger(Object object) {
 }
 
 MediaType parseMediaType(File file) {
-  if (file?.path?.isEmpty ?? true) return null;
+  if (file.path.isEmpty) return MediaType('application', 'octet-stream');
   var extensionIndex = file.path.lastIndexOf('.');
-  if (extensionIndex == -1 || extensionIndex == file.path.length - 1) return null;
+  if (extensionIndex == -1 || extensionIndex == file.path.length - 1) return MediaType('application', 'octet-stream');
   var extension = file.path.substring(extensionIndex + 1).toLowerCase();
 
-  MediaType mediaType;
+  MediaType? mediaType;
   if (mimeTypes.containsKey(extension)) {
-    var split = mimeTypes[extension].split('/');
-    mediaType = MediaType(split[0], split[1]);
+    var split = mimeTypes[extension]?.split('/');
+    mediaType = split == null ? null : MediaType(split[0], split[1]);
   }
   return mediaType ?? MediaType('application', 'octet-stream');
 }
-
-const Map<String, String> mimeTypes = const {
-  "html": "text/html",
-  "htm": "text/html",
-  "shtml": "text/html",
-  "css": "text/css",
-  "xml": "text/xml",
-  "gif": "image/gif",
-  "jpeg": "image/jpeg",
-  "jpg": "image/jpeg",
-  "jpe": "image/jpeg",
-  "js": "application/javascript",
-  "atom": "application/atom+xml",
-  "rss": "application/rss+xml",
-  "mml": "text/mathml",
-  "txt": "text/plain",
-  "text": "text/plain",
-  "conf": "text/plain",
-  "def": "text/plain",
-  "log": "text/plain",
-  "in": "text/plain",
-  "csv": "text/csv",
-  "jad": "text/vnd.sun.j2me.app-descriptor",
-  "wml": "text/vnd.wap.wml",
-  "htc": "text/x-component",
-  "png": "image/png",
-  "tif": "image/tiff",
-  "tiff": "image/tiff",
-  "wbmp": "image/vnd.wap.wbmp",
-  "ico": "image/x-icon",
-  "jng": "image/x-jng",
-  "bmp": "image/x-ms-bmp",
-  "svg": "image/svg+xml",
-  "svgz": "image/svg+xml",
-  "webp": "image/webp",
-  "woff": "application/font-woff",
-  "jar": "application/java-archive",
-  "war": "application/java-archive",
-  "ear": "application/java-archive",
-  "json": "application/json",
-  "hqx": "application/mac-binhex40",
-  "doc": "application/msword",
-  "pdf": "application/pdf",
-  "ps": "application/postscript",
-  "eps": "application/postscript",
-  "ai": "application/postscript",
-  "rtf": "application/rtf",
-  "m3u8": "application/vnd.apple.mpegurl",
-  "xls": "application/vnd.ms-excel",
-  "eot": "application/vnd.ms-fontobject",
-  "ppt": "application/vnd.ms-powerpoint",
-  "wmlc": "application/vnd.wap.wmlc",
-  "kml": "application/vnd.google-earth.kml+xml",
-  "kmz": "application/vnd.google-earth.kmz",
-  "7z": "application/x-7z-compressed",
-  "cco": "application/x-cocoa",
-  "jardiff": "application/x-java-archive-diff",
-  "jnlp": "application/x-java-jnlp-file",
-  "run": "application/x-makeself",
-  "pl": "application/x-perl",
-  "pm": "application/x-perl",
-  "prc": "application/x-pilot",
-  "pdb": "application/x-pilot",
-  "rar": "application/x-rar-compressed",
-  "rpm": "application/x-redhat-package-manager",
-  "sea": "application/x-sea",
-  "swf": "application/x-shockwave-flash",
-  "sit": "application/x-stuffit",
-  "tcl": "application/x-tcl",
-  "tk": "application/x-tcl",
-  "der": "application/x-x509-ca-cert",
-  "pem": "application/x-x509-ca-cert",
-  "crt": "application/x-x509-ca-cert",
-  "xpi": "application/x-xpinstall",
-  "xhtml": "application/xhtml+xml",
-  "xspf": "application/xspf+xml",
-  "zip": "application/zip",
-  "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  "mid": "audio/midi",
-  "midi": "audio/midi",
-  "kar": "audio/midi",
-  "mp3": "audio/mpeg",
-  "ogg": "audio/ogg",
-  "m4a": "audio/x-m4a",
-  "ra": "audio/x-realaudio",
-  "3gpp": "video/3gpp",
-  "3gp": "video/3gpp",
-  "ts": "video/mp2t",
-  "mp4": "video/mp4",
-  "mpeg": "video/mpeg",
-  "mpg": "video/mpeg",
-  "mov": "video/quicktime",
-  "webm": "video/webm",
-  "flv": "video/x-flv",
-  "m4v": "video/x-m4v",
-  "mng": "video/x-mng",
-  "asx": "video/x-ms-asf",
-  "asf": "video/x-ms-asf",
-  "wmv": "video/x-ms-wmv",
-  "avi": "video/x-msvideo"
-};

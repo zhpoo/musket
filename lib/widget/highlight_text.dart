@@ -3,30 +3,29 @@ import 'package:flutter/material.dart';
 class HighlightText extends StatelessWidget {
   final String text;
   final String highlight;
-  final TextStyle style;
+  final TextStyle? style;
   final TextStyle highlightStyle;
-  final Color highlightColor;
+  final Color? highlightColor;
   final bool ignoreCase;
 
   HighlightText({
-    Key key,
-    this.text,
-    this.highlight,
+    super.key,
+    required this.text,
+    this.highlight = '',
     this.style,
     this.highlightColor,
-    TextStyle highlightStyle,
-    this.ignoreCase: false,
+    TextStyle? highlightStyle,
+    this.ignoreCase = false,
   })  : assert(
           highlightColor == null || highlightStyle == null,
           'highlightColor and highlightStyle cannot be provided at same time.',
         ),
-        highlightStyle = highlightStyle ?? style?.copyWith(color: highlightColor) ?? TextStyle(color: highlightColor),
-        super(key: key);
+        highlightStyle = highlightStyle ?? style?.copyWith(color: highlightColor) ?? TextStyle(color: highlightColor);
 
   @override
   Widget build(BuildContext context) {
-    final text = this.text ?? '';
-    if ((highlight?.isEmpty ?? true) || text.isEmpty) {
+    final text = this.text;
+    if (highlight.isEmpty || text.isEmpty) {
       return Text(text, style: style);
     }
 

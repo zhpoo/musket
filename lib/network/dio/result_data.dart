@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 
 /// 网络请求结果数据
 class ResultData {
-  var body;
-  Headers headers;
-  int statusCode;
-  bool isSuccessful;
-  DioError error;
+  dynamic body;
+  Headers? headers;
+  int? statusCode;
+  bool? isSuccessful;
+  DioError? error;
 
   ResultData({
     this.body,
@@ -16,5 +16,5 @@ class ResultData {
     this.error,
   });
 
-  String get failMessage => error?.message?.isNotEmpty == true ? error.message : '$body';
+  String get failMessage => error?.message?.isNotEmpty == true ? error!.message! : '$body';
 }

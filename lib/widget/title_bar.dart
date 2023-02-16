@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TitleBarStyle {
-  final Color backgroundColor;
-  final double height;
-  final double elevation;
-  final PreferredSizeWidget bottom;
-  final bool centerTitle;
+  final Color? backgroundColor;
+  final double? height;
+  final double? elevation;
+  final PreferredSizeWidget? bottom;
+  final bool? centerTitle;
   final bool automaticallyImplyLeading;
 
   const TitleBarStyle({
@@ -19,42 +19,42 @@ class TitleBarStyle {
 }
 
 class TitleBar extends AppBar {
-  static TitleBarStyle defaultStyle;
+  static TitleBarStyle? defaultStyle;
 
   static TitleBarStyle get _defaults => defaultStyle ?? const TitleBarStyle();
 
   TitleBar({
-    Widget title,
-    Widget left,
-    List<Widget> right,
-    PreferredSizeWidget bottom,
-    bool automaticallyImplyLeading,
-    bool centerTitle,
-    double elevation,
-    double height,
-    Color backgroundColor,
+    Widget? title,
+    Widget? left,
+    List<Widget>? right,
+    PreferredSizeWidget? bottom,
+    bool? automaticallyImplyLeading,
+    bool? centerTitle,
+    double? elevation,
+    double? height,
+    Color? backgroundColor,
   }) : super(
           title: title,
           leading: left,
           actions: right,
-          automaticallyImplyLeading: automaticallyImplyLeading ?? _defaults.automaticallyImplyLeading,
+          automaticallyImplyLeading: automaticallyImplyLeading != null || _defaults.automaticallyImplyLeading,
           bottom: bottom ?? _defaults.bottom,
           centerTitle: centerTitle ?? _defaults.centerTitle,
           elevation: elevation ?? _defaults.elevation,
-          toolbarHeight: (height ?? _defaults.height) + (bottom?.preferredSize?.height ?? 0),
+          toolbarHeight: (height ?? _defaults.height ?? 0) + (bottom?.preferredSize.height ?? 0),
           backgroundColor: backgroundColor,
         );
 
   TitleBar.text({
-    @required String text,
-    Widget left,
-    List<Widget> right,
-    PreferredSizeWidget bottom,
-    bool automaticallyImplyLeading,
-    bool centerTitle,
-    double elevation,
-    double height,
-    Color backgroundColor,
+    @required String? text,
+    Widget? left,
+    List<Widget>? right,
+    PreferredSizeWidget? bottom,
+    bool? automaticallyImplyLeading,
+    bool? centerTitle,
+    double? elevation,
+    double? height,
+    Color? backgroundColor,
   }) : this(
           title: Text(text ?? ''),
           left: left,
@@ -68,15 +68,15 @@ class TitleBar extends AppBar {
         );
 
   TitleBar.withBack({
-    String text,
+    String? text,
     Widget backButton = const BackButton(),
-    List<Widget> right,
-    PreferredSizeWidget bottom,
+    List<Widget>? right,
+    PreferredSizeWidget? bottom,
     bool automaticallyImplyLeading = false,
     bool centerTitle = true,
-    double elevation,
-    double height,
-    Color backgroundColor,
+    double? elevation,
+    double? height,
+    Color? backgroundColor,
   }) : this.text(
           text: text,
           right: right,
@@ -91,7 +91,7 @@ class TitleBar extends AppBar {
 
   PreferredSizeWidget withDecoration(Decoration decoration) {
     return PreferredSize(
-      preferredSize: preferredSize + Offset(decoration?.padding?.horizontal ?? 0, decoration?.padding?.vertical ?? 0),
+      preferredSize: preferredSize + Offset(decoration.padding?.horizontal ?? 0, decoration.padding?.vertical ?? 0),
       child: Container(child: this, decoration: decoration),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musket/extensions/widget_extension.dart';
 import 'package:musket/widget/loading_indicator.dart';
@@ -8,36 +7,35 @@ class Dialogs {
 
   static bool defaultCancelable = true;
 
-  static Future<T> alert<T>({
-    Key key,
-    @required BuildContext context,
-    bool cancelable,
-    Color barrierColor: Colors.black54,
-    AlignmentGeometry alignment: Alignment.center,
+  static Future<T?> alert<T>({
+    Key? key,
+    required BuildContext context,
+    bool? cancelable,
+    Color barrierColor = Colors.black54,
+    AlignmentGeometry alignment = Alignment.center,
     Duration transitionDuration = const Duration(milliseconds: 250),
     bool expandWidth = true,
-    Widget title,
-    EdgeInsetsGeometry titlePadding,
-    TextStyle titleTextStyle,
-    Widget content,
-    EdgeInsetsGeometry contentPadding = const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
-    TextStyle contentTextStyle,
-    List<Widget> actions,
-    EdgeInsetsGeometry actionsPadding = EdgeInsets.zero,
-    VerticalDirection actionsOverflowDirection,
-    double actionsOverflowButtonSpacing,
-    EdgeInsetsGeometry buttonPadding,
-    Color backgroundColor,
-    double elevation,
-    String semanticLabel,
-    EdgeInsetsGeometry insetPadding = const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    Widget? title,
+    EdgeInsets? titlePadding,
+    TextStyle? titleTextStyle,
+    Widget? content,
+    EdgeInsets contentPadding = const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
+    TextStyle? contentTextStyle,
+    List<Widget>? actions,
+    EdgeInsets actionsPadding = EdgeInsets.zero,
+    VerticalDirection? actionsOverflowDirection,
+    double? actionsOverflowButtonSpacing,
+    EdgeInsets? buttonPadding,
+    Color? backgroundColor,
+    double? elevation,
+    String? semanticLabel,
+    EdgeInsets insetPadding = const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
     Clip clipBehavior = Clip.none,
-    ShapeBorder shape,
+    ShapeBorder? shape,
     bool scrollable = false,
   }) {
     titlePadding ??= Edges(all: 24, bottom: content == null ? 20.0 : 0);
     if (expandWidth == true) {
-      assert(insetPadding != null);
       assert(title != null || content != null);
       if (title != null) {
         title = SizedBox(
@@ -46,14 +44,13 @@ class Dialogs {
         );
       }
       if (content != null) {
-        assert(contentPadding != null);
         content = SizedBox(
           width: MediaQuery.of(context).size.width - insetPadding.horizontal - contentPadding.horizontal,
           child: content,
         );
       }
     }
-    cancelable ??= defaultCancelable ?? true;
+    cancelable ??= defaultCancelable;
     return show(
       context: context,
       cancelable: cancelable,
@@ -88,8 +85,8 @@ class Dialogs {
 
   static Future<void> showLoading(
     BuildContext context, {
-    Widget indicator: const LoadingIndicator(),
-    bool cancelable: false,
+    Widget indicator = const LoadingIndicator(),
+    bool cancelable = false,
   }) {
     return show(
       context: context,
@@ -99,26 +96,25 @@ class Dialogs {
     );
   }
 
-  static Future<T> show<T>({
-    @required BuildContext context,
-    @required WidgetBuilder builder,
-    bool cancelable,
-    Color barrierColor: Colors.black54,
-    AlignmentGeometry alignment: Alignment.center,
+  static Future<T?> show<T>({
+    required BuildContext context,
+    required WidgetBuilder builder,
+    bool? cancelable,
+    Color? barrierColor = Colors.black54,
+    AlignmentGeometry alignment = Alignment.center,
     Duration transitionDuration = const Duration(milliseconds: 250),
   }) {
-    assert(builder != null);
-    cancelable ??= defaultCancelable ?? true;
+    cancelable ??= defaultCancelable;
     return showGeneralDialog(
       context: context,
       barrierDismissible: cancelable,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       // barrierColor cannot be transparent.
-      barrierColor: barrierColor == Colors.transparent ? null : barrierColor,
+      // barrierColor: barrierColor == Colors.transparent ? null : barrierColor,
       transitionDuration: transitionDuration,
       pageBuilder: (context, animation, secondaryAnimation) {
         Widget contentWidget = UnconstrainedBox(alignment: alignment, child: builder(context));
-        if (cancelable) {
+        if (cancelable == true) {
           return contentWidget;
         }
         return WillPopScope(onWillPop: () async => false, child: contentWidget);

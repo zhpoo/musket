@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class FixedMaterialColor extends MaterialColor {
   FixedMaterialColor(Color primary)
-      : assert(primary != null),
-        super(primary.value, <int, Color>{
+      : super(primary.value, <int, Color>{
           50: primary,
           100: primary,
           200: primary,

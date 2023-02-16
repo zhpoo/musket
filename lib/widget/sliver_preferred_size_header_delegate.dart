@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class SliverPreferredSizeHeaderDelegate extends SliverPersistentHeaderDelegate {
   final PreferredSizeWidget child;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final double elevation;
 
-  const SliverPreferredSizeHeaderDelegate({this.child, this.backgroundColor, this.elevation = 0});
+  const SliverPreferredSizeHeaderDelegate({required this.child, this.backgroundColor, this.elevation = 0});
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -16,7 +16,7 @@ class SliverPreferredSizeHeaderDelegate extends SliverPersistentHeaderDelegate {
         child: child,
       );
     }
-    if (elevation != null) {
+    if (elevation > 0) {
       result = Material(
         color: Colors.transparent,
         elevation: elevation,

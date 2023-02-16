@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:musket/musket.dart';
 
 /// width:height
@@ -8,7 +7,7 @@ const double kDefaultBannerRatio = 1.618;
 class BannerResource {
   String imageUrl;
 
-  BannerResource({String image}) : imageUrl = image;
+  BannerResource({required String image}) : imageUrl = image;
 }
 
 class BannerController extends SwiperController {}
@@ -16,27 +15,27 @@ class BannerController extends SwiperController {}
 class SwipeBanner<T extends BannerResource> extends StatelessWidget {
   final List<T> banners;
   final bool autoPlay;
-  final void Function(T data) onTap;
-  final EdgeInsetsGeometry margin;
+  final void Function(T data)? onTap;
+  final EdgeInsetsGeometry? margin;
   final Color imageBackground;
   final Color dotColor;
   final Color dotActiveColor;
   final double dotSize;
   final double dotSpace;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
   final double ratio;
-  final BannerController controller;
-  final SwiperDataBuilder itemBuilder;
+  final BannerController? controller;
+  final SwiperDataBuilder? itemBuilder;
   final bool outer;
   final bool loop;
   final bool showPagination;
-  final int index;
-  final SwiperPlugin pagination;
+  final int? index;
+  final SwiperPlugin? pagination;
 
   const SwipeBanner({
-    Key key,
-    @required this.banners,
-    this.autoPlay: true,
+    super.key,
+    required this.banners,
+    this.autoPlay = true,
     this.onTap,
     this.margin,
     this.borderRadius,
@@ -51,17 +50,15 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
     this.index,
     this.pagination,
     this.outer = false,
-    bool loop,
-    bool showPagination,
-  })  : assert(autoPlay != null),
-        assert(ratio != null && ratio > 0),
-        this.loop = loop ?? (banners?.length ?? 0) > 1,
-        this.showPagination = showPagination ?? (banners?.length ?? 0) > 1,
-        super(key: key);
+    bool? loop,
+    bool? showPagination,
+  })  : assert(ratio > 0),
+        this.loop = loop ?? banners.length > 1,
+        this.showPagination = showPagination ?? banners.length > 1;
 
   @override
   Widget build(BuildContext context) {
-    if (banners?.isEmpty ?? true) {
+    if (banners.isEmpty) {
       return Container();
     }
     final imageWidth = MediaQuery.of(context).size.width - (margin?.horizontal ?? 0);
@@ -74,7 +71,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
         borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
         child: Swiper.list(
-          outer: outer ?? false,
+          outer: outer,
           list: banners,
           index: index,
           loop: loop,
@@ -84,7 +81,7 @@ class SwipeBanner<T extends BannerResource> extends StatelessWidget {
           builder: itemBuilder ??
               (BuildContext context, dynamic data, int index) {
                 return CachedNetworkImage(
-                  imageUrl: (data as T)?.imageUrl ?? '',
+                  imageUrl: (data as T).imageUrl,
                   width: imageWidth,
                   height: height,
                   fit: BoxFit.cover,

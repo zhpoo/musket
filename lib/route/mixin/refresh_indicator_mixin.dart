@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:musket/common/utils.dart';
 
 mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey;
 
   @override
   void initState() {
     super.initState();
     refreshKey = GlobalKey<RefreshIndicatorState>();
-    if (autoRefreshOnInit == true) postFrameCallback(callRefresh);
+    if (autoRefreshOnInit) postFrameCallback(callRefresh);
   }
 
   void callRefresh() {
@@ -20,17 +20,14 @@ mixin RefreshIndicatorMixin<T extends StatefulWidget> on State<T> {
   bool get autoRefreshOnInit => true;
 
   RefreshIndicator refreshIndicator({
-    @required Widget child,
+    required Widget child,
     double displacement = 40.0,
-    Color color,
-    Color backgroundColor,
+    Color? color,
+    Color? backgroundColor,
     ScrollNotificationPredicate notificationPredicate = defaultScrollNotificationPredicate,
-    String semanticsLabel,
-    String semanticsValue,
+    String? semanticsLabel,
+    String? semanticsValue,
   }) {
-    assert(child != null);
-    assert(onRefresh != null);
-    assert(notificationPredicate != null);
     return RefreshIndicator(
       key: refreshKey,
       child: child,
@@ -52,19 +49,19 @@ extension RefreshIndicatorExtension on Widget {
   Widget intoRefreshIndicator(
     RefreshIndicatorMixin indicator, {
     double displacement = 40.0,
-    Color color,
-    Color backgroundColor,
-    String semanticsLabel,
-    String semanticsValue,
+    Color? color,
+    Color? backgroundColor,
+    String? semanticsLabel,
+    String? semanticsValue,
     ScrollNotificationPredicate notificationPredicate = defaultScrollNotificationPredicate,
     bool nestedFillRemaining = false,
     bool enabled = true,
   }) {
-    if (enabled != true) {
+    if (!enabled) {
       return this;
     }
     return indicator.refreshIndicator(
-      child: nestedFillRemaining == true ? CustomScrollView(slivers: <Widget>[SliverFillRemaining(child: this)]) : this,
+      child: nestedFillRemaining ? CustomScrollView(slivers: <Widget>[SliverFillRemaining(child: this)]) : this,
       displacement: displacement,
       color: color,
       backgroundColor: backgroundColor,

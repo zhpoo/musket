@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-abstract class UpdatableValueNotifier<T> extends ValueNotifier<T> {
+abstract class UpdatableValueNotifier<T> extends ValueNotifier<T?> {
   UpdatableValueNotifier() : super(null);
   bool _isUpdating = false;
   final List<Completer<bool>> _completers = [];
