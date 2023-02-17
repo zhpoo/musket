@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:musket/common/logger.dart';
+import 'package:musket/network/dio/log_intercepter_plus.dart';
 import 'package:musket/network/dio/mime_types.dart';
 import 'package:path/path.dart';
 
@@ -72,7 +73,7 @@ class Http {
   }
 
   /// see [ResponseInterceptor]
-  Future<ResultData?> call<T>() async {
+  Future<T?> call<T>() async {
     var data;
     if (_files.isNotEmpty) {
       asFormData();
@@ -88,7 +89,7 @@ class Http {
     options.method = _methodToString(method);
 
     try {
-      Response<ResultData?> response = await dioHttp.request<ResultData>(
+      Response<T?> response = await dioHttp.request<T>(
         url,
         data: method == Method.get ? null : data,
         queryParameters: method == Method.get ? data : null,
@@ -99,7 +100,8 @@ class Http {
       );
       return response.data;
     } on DioError catch (e) {
-      return _responseError(e);
+      // return _responseError(e);
+      rethrow;
     }
   }
 
@@ -173,12 +175,13 @@ void initHttp({
   // dio.options.connectTimeout = const Duration(seconds: 15);
   dio.options.connectTimeout = 15000;
   if (kDebugMode) {
-    dio.interceptors.add(LogInterceptor(
+    var logInterceptor = LogInterceptorPlus(
       requestBody: true,
       responseHeader: false,
       responseBody: true,
       logPrint: _logger,
-    ));
+    );
+    dio.interceptors.add(logInterceptor);
   }
   // ResponseInterceptor 需要放到 LogInterceptor 后面，否则打印不出 response 的 log
   if (typeAdapter != null) {
@@ -221,7 +224,8 @@ void mergeDioBaseOptions({
 }
 
 void _logger(Object object) {
-  Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
+  // Logger.log('[Dio] $object'.replaceAll('\n', '\n\t\t\t'));
+  Logger.log(object);
 }
 
 MediaType parseMediaType(File file) {

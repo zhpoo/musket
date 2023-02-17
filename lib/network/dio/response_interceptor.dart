@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 abstract class TypeAdapter {
-  T adapt<T>(dynamic data);
+  Response<T?> adapt<T>(Response<dynamic> response);
 }
 
 class ResponseInterceptor extends InterceptorsWrapper {
@@ -11,12 +11,12 @@ class ResponseInterceptor extends InterceptorsWrapper {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    handler.next(response.copyWith(data: typeAdapter.adapt(response.data)));
+    handler.next(typeAdapter.adapt(response));
   }
 }
 
 extension ResponseEx on Response {
-  Response copyWith({
+  Response<T> copyWith<T>({
     dynamic data,
     RequestOptions? requestOptions,
     int? statusCode,

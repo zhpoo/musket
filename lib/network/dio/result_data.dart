@@ -16,5 +16,5 @@ class ResultData {
     this.error,
   });
 
-  String get failMessage => error?.message?.isNotEmpty == true ? error!.message! : '$body';
+  String get failMessage => error?.message.isNotEmpty == true ? error!.message: '$body';
 }
