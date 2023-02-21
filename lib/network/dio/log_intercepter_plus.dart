@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 /// [LogInterceptorPlus] is used to print logs during network requests.
@@ -54,12 +56,9 @@ class LogInterceptorPlus extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     var buffer = logBuffer(options);
 
-    buffer.writeln('*** Request ***');
-    _printKV('uri', options.uri, buffer);
-    //options.headers;
+    buffer.writeln('[Http ${options.method}] ${Uri.decodeFull(options.uri.toString())}');
 
     if (request) {
-      _printKV('method', options.method, buffer);
       _printKV('responseType', options.responseType.toString(), buffer);
       _printKV('followRedirects', options.followRedirects, buffer);
       _printKV('connectTimeout', options.connectTimeout, buffer);
@@ -71,14 +70,14 @@ class LogInterceptorPlus extends Interceptor {
       options.extra['logBuffer'] = buffer;
     }
     if (requestHeader) {
-      buffer.writeln('headers:');
-      options.headers.forEach((key, v) => _printKV(' $key', v, buffer));
+      buffer.writeln('[Request Headers]:');
+      options.headers.forEach((key, v) => _printKV(' $key', v.join('\r\n\t'), buffer));
     }
     if (requestBody) {
-      buffer.writeln('data:');
-      _printAll(options.data, buffer);
+      buffer.writeln('[Request Data]:');
+      buffer.writeln(_toJson(options.data));
     }
-    buffer.writeln('');
+    options.extra['logStartTime'] = DateTime.now();
 
     handler.next(options);
   }
@@ -86,11 +85,9 @@ class LogInterceptorPlus extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     var buffer = logBuffer(response.requestOptions);
-    buffer.writeln('*** Response ***');
+    buffer.writeln('[Http Response]');
     _printResponse(response, buffer);
-
-    logPrint(buffer);
-    response.requestOptions.extra.remove('logBuffer');
+    _printEnd(response.requestOptions);
 
     handler.next(response);
   }
@@ -99,44 +96,63 @@ class LogInterceptorPlus extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) async {
     var buffer = logBuffer(err.requestOptions);
     if (error) {
-      buffer.writeln('*** DioError ***:');
-      buffer.writeln('uri: ${err.requestOptions.uri}');
+      buffer.writeln('[Request Error]:');
       buffer.writeln('$err');
       if (err.response != null) {
         _printResponse(err.response!, buffer);
       }
-      buffer.writeln('');
     }
-
-    logPrint(buffer);
-    err.requestOptions.extra.remove('logBuffer');
+    _printEnd(err.requestOptions);
 
     handler.next(err);
   }
 
   void _printResponse(Response response, StringBuffer buffer) {
-    _printKV('uri', response.requestOptions.uri, buffer);
     if (responseHeader) {
       _printKV('statusCode', response.statusCode, buffer);
       if (response.isRedirect == true) {
         _printKV('redirect', response.realUri, buffer);
       }
 
-      buffer.writeln('headers:');
+      buffer.writeln('[Response Headers]:');
       response.headers.forEach((key, v) => _printKV(' $key', v.join('\r\n\t'), buffer));
     }
     if (responseBody) {
-      buffer.writeln('Response Text:');
-      _printAll(response.toString(), buffer);
+      buffer.writeln('[Response Data]:');
+      switch (response.requestOptions.responseType) {
+        case ResponseType.json:
+          buffer.writeln(_toJson(response.data));
+          break;
+        case ResponseType.stream:
+          buffer.writeln('(stream omitted)');
+          break;
+        case ResponseType.plain:
+          buffer.writeln(response);
+          break;
+        case ResponseType.bytes:
+          buffer.writeln('(bytes omitted)');
+          break;
+      }
     }
+  }
+
+  void _printEnd(RequestOptions options) {
+    var buffer = logBuffer(options);
+    var url = Uri.decodeFull(options.uri.toString());
+    var costTime = DateTime.now().difference(options.extra['logStartTime']).inMilliseconds;
+    buffer.writeln('[End Http][${costTime}ms] $url');
+
+    logPrint(buffer);
+
+    options.extra.remove('logBuffer');
+    options.extra.remove('logStartTime');
   }
 
   void _printKV(String key, Object? v, StringBuffer buffer) {
     buffer.writeln('$key: $v');
   }
 
-  void _printAll(msg, StringBuffer buffer) {
-    buffer.writeln(msg);
-    // msg.toString().split('\n').forEach(buffer.writeln);
+  String _toJson(data) {
+    return '${const JsonEncoder.withIndent(' ').convert(data)}';
   }
 }

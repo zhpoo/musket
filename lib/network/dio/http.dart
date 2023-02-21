@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -6,221 +7,213 @@ import 'package:http_parser/http_parser.dart';
 import 'package:musket/common/logger.dart';
 import 'package:musket/network/dio/log_intercepter_plus.dart';
 import 'package:musket/network/dio/mime_types.dart';
-import 'package:path/path.dart';
 
-import 'code.dart';
-import 'dio_wrapper.dart';
-import 'response_interceptor.dart';
-import 'result_data.dart';
+typedef HttpOptions = Options;
 
-const contentTypeFormData = 'multipart/form-data';
+typedef HttpProgressCallback = ProgressCallback;
+
+typedef HttpCancelToken = CancelToken;
+
+typedef HttpResponse<T> = Response<T>;
+
+abstract class TypeAdapter {
+  const TypeAdapter();
+
+  T? adapt<T>(data);
+
+  List<T>? adaptList<T>(data) {
+    if (data == null) {
+      _logger('adapt List<$T> with data: null');
+      return null;
+    }
+    return List<T>.from(data.map((e) => adapt<T>(e)));
+  }
+}
+
+class DefaultTypeAdapter extends TypeAdapter {
+  const DefaultTypeAdapter();
+
+  @override
+  T? adapt<T>(data) => data as T?;
+}
+
+const formData = 'multipart/form-data';
+
+extension ResponseEx on HttpResponse {
+  bool get isSuccess => statusCode != null && statusCode! >= 200 && statusCode! < 300;
+
+  bool get isNetworkError => statusCode == null;
+
+  Response<T> withData<T>({
+    required T? data,
+    RequestOptions? requestOptions,
+    int? statusCode,
+    String? statusMessage,
+    bool? isRedirect,
+    List<RedirectRecord>? redirects,
+    Map<String, dynamic>? extra,
+    Headers? headers,
+  }) {
+    return Response(
+      data: data,
+      requestOptions: requestOptions ?? this.requestOptions,
+      statusCode: statusCode ?? this.statusCode,
+      isRedirect: isRedirect ?? this.isRedirect,
+      redirects: redirects ?? this.redirects,
+      extra: extra ?? this.extra,
+      headers: headers ?? this.headers,
+    );
+  }
+}
 
 class Http {
-  String url;
-  Method method;
-  Map<String, File> _files = {};
-  Map<String, dynamic> _params = {};
-  HttpOptions options = HttpOptions();
-  dynamic _body;
+  Http._();
 
-  HttpCancelToken? cancelToken;
-  HttpProgressCallback? onSendProgress;
-  HttpProgressCallback? onReceiveProgress;
+  static TypeAdapter _typeAdapter = const DefaultTypeAdapter();
 
-  Http({required this.method, required this.url});
+  static Dio? _dio;
 
-  Http.get([String url = '']) : this(method: Method.get, url: url);
-
-  Http.post([String url = '']) : this(method: Method.post, url: url);
-
-  Http.delete([String url = '']) : this(method: Method.delete, url: url);
-
-  Http.put([String url = '']) : this(method: Method.put, url: url);
-
-  Http addHeader(String key, dynamic value) {
-    options.headers ??= <String, dynamic>{};
-    options.headers![key] = value;
-    return this;
+  static Dio get dio {
+    if (_dio == null) initHttp();
+    return _dio!;
   }
 
-  Http asFormData() {
-    method = Method.post; // form-data must use post method.
-    addHeader(Headers.contentTypeHeader, contentTypeFormData);
-    return this;
-  }
-
-  Http addFile(String key, File file) {
-    _files[key] = file;
-    return this;
-  }
-
-  Http addParam(String key, dynamic value) {
-    if (value is File) {
-      return addFile(key, value);
-    }
-    _params[key] = value;
-    return this;
-  }
-
-  Http addParams(Map<String, dynamic> params) {
-    params.forEach(addParam);
-    return this;
-  }
-
-  Http body(dynamic body) {
-    this._body = body;
-    return this;
-  }
-
-  /// see [ResponseInterceptor]
-  Future<T?> call<T>() async {
-    var data;
-    if (_files.isNotEmpty) {
-      asFormData();
-      await _createMultipartFiles();
-    }
-    if (method != Method.get && _body != null) {
-      data = _body;
-    } else if (options.headers?[Headers.contentTypeHeader] == contentTypeFormData) {
-      data = FormData.fromMap(_params);
+  static void initHttp({
+    BaseOptions? options,
+    bool loggable = kDebugMode,
+    TypeAdapter? typeAdapter,
+  }) {
+    Dio dio = _dio ?? Dio();
+    dio.options = options ??
+        BaseOptions(
+          headers: {
+            Headers.contentTypeHeader: Headers.formUrlEncodedContentType,
+            Headers.acceptHeader: Headers.jsonContentType,
+          },
+          connectTimeout: 15000,
+        );
+    if (loggable) {
+      var logInterceptor = LogInterceptorPlus(
+        requestBody: true,
+        responseHeader: true,
+        responseBody: true,
+        logPrint: _logger,
+      );
+      dio.interceptors.add(logInterceptor);
     } else {
-      data = _params;
+      dio.interceptors.removeWhere((element) => element is LogInterceptorPlus);
     }
-    options.method = _methodToString(method);
+    if (typeAdapter != null) {
+      _typeAdapter = typeAdapter;
+    }
+    _dio = dio;
+  }
 
+  /// 发起Http请求对象而非 List
+  static Future<HttpResponse<T?>> request<T>({
+    required String path,
+    String? method,
+    dynamic data,
+    HttpOptions? options,
+    HttpCancelToken? cancelToken,
+    HttpProgressCallback? onSendProgress,
+    HttpProgressCallback? onReceiveProgress,
+    TypeAdapter? typeAdapter,
+  }) async {
+    var response = await _fetch(
+      path: path,
+      method: method,
+      data: data,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+    typeAdapter ??= _typeAdapter;
+    return response.withData(data: typeAdapter.adapt<T>(response.data));
+  }
+
+  /// 发起Http请求 List
+  static Future<HttpResponse<List<T>?>> requestList<T>({
+    required String path,
+    String? method,
+    dynamic data,
+    HttpOptions? options,
+    HttpCancelToken? cancelToken,
+    HttpProgressCallback? onSendProgress,
+    HttpProgressCallback? onReceiveProgress,
+    TypeAdapter? typeAdapter,
+  }) async {
+    var response = await _fetch(
+      path: path,
+      method: method,
+      data: data,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+    typeAdapter ??= _typeAdapter;
+    return response.withData(data: typeAdapter.adaptList<T>(response.data));
+  }
+
+  static Future<HttpResponse> _fetch({
+    required String path,
+    String? method,
+    dynamic data,
+    HttpOptions? options,
+    HttpCancelToken? cancelToken,
+    HttpProgressCallback? onSendProgress,
+    HttpProgressCallback? onReceiveProgress,
+  }) async {
+    options ??= HttpOptions();
+
+    Response<dynamic> response;
     try {
-      Response<T?> response = await dioHttp.request<T>(
-        url,
-        data: method == Method.get ? null : data,
-        queryParameters: method == Method.get ? data : null,
-        cancelToken: cancelToken,
+      if (data is Map<String, dynamic>) {
+        var hasFile = false;
+        data.forEach((key, value) async {
+          if (value is File) {
+            hasFile = true;
+            data[key] = await asMultipartFile(value);
+          } else if (value is MultipartFile) {
+            hasFile = true;
+          }
+        });
+        if (hasFile) {
+          data = FormData.fromMap(data);
+          options.headers ??= {};
+          options.headers![Headers.contentTypeHeader] = formData;
+        }
+      }
+      method ??= dio.options.method;
+      method = method.toLowerCase();
+      options.method = method;
+
+      var query = method == 'get' ? data : null;
+
+      response = await dio.request(
+        path,
+        data: query == null ? data : null,
+        queryParameters: query,
         options: options,
+        cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      return response.data;
     } on DioError catch (e) {
-      // return _responseError(e);
-      rethrow;
+      Logger.log(e);
+      response = e.response ?? Response(requestOptions: e.requestOptions, statusMessage: e.message);
     }
+    return response;
   }
 
-  _createMultipartFiles() async {
-    _files.forEach((key, file) {
-      _params[key] = MultipartFile.fromFileSync(
-        file.path,
-        filename: basename(file.path),
-        contentType: parseMediaType(file),
-      );
-    });
-  }
-
-  static ResultData _responseError(DioError e) {
-    Response errorResponse;
-    if (e.response != null) {
-      errorResponse = e.response!;
-    } else {
-      errorResponse = Response(
-        statusCode: Code.failed,
-        requestOptions: e.requestOptions,
-      );
-      if (e.type == DioErrorType.connectTimeout || e.type == DioErrorType.receiveTimeout) {
-        errorResponse.statusCode = Code.networkTimeout;
-      }
-    }
-    return ResultData(
-      body: e.message,
-      isSuccessful: false,
-      statusCode: errorResponse.statusCode,
-      error: e,
+  static Future<MultipartFile> asMultipartFile(File file) async {
+    return await MultipartFile.fromFile(
+      file.path,
+      contentType: parseMediaType(file),
     );
   }
-}
-
-enum Method { get, post, delete, put }
-
-String _methodToString(Method method) {
-  switch (method) {
-    case Method.get:
-      return 'GET';
-    case Method.post:
-      return 'POST';
-    case Method.put:
-      return 'PUT';
-    case Method.delete:
-      return 'DELETE';
-    default:
-      throw '$method NOT support yet!';
-  }
-}
-
-Dio? _dio;
-
-Dio get dioHttp {
-  if (_dio == null) {
-    throw 'please call initHttp() first';
-  }
-  return _dio!;
-}
-
-void initHttp({
-  TypeAdapter? typeAdapter,
-}) {
-  if (_dio != null) {
-    return;
-  }
-  Dio dio = Dio();
-  dio.options.headers[Headers.contentTypeHeader] = Headers.formUrlEncodedContentType;
-  dio.options.headers[Headers.acceptHeader] = Headers.jsonContentType;
-  // dio.options.connectTimeout = const Duration(seconds: 15);
-  dio.options.connectTimeout = 15000;
-  if (kDebugMode) {
-    var logInterceptor = LogInterceptorPlus(
-      requestBody: true,
-      responseHeader: false,
-      responseBody: true,
-      logPrint: _logger,
-    );
-    dio.interceptors.add(logInterceptor);
-  }
-  // ResponseInterceptor 需要放到 LogInterceptor 后面，否则打印不出 response 的 log
-  if (typeAdapter != null) {
-    dio.interceptors.add(ResponseInterceptor(typeAdapter: typeAdapter));
-  }
-  _dio = dio;
-}
-
-void mergeDioBaseOptions({
-  String? baseUrl,
-  Method? method,
-  Map<String, dynamic>? queryParameters,
-  String? path,
-  int? connectTimeout,
-  int? receiveTimeout,
-  int? sendTimeout,
-  Map<String, dynamic>? extra,
-  Map<String, dynamic>? headers,
-  String? contentType,
-  ValidateStatus? validateStatus,
-  bool? receiveDataWhenStatusError,
-  bool? followRedirects,
-  int? maxRedirects,
-}) {
-  dioHttp.options = dioHttp.options.copyWith(
-    method: method == null ? null : _methodToString(method),
-    baseUrl: baseUrl,
-    queryParameters: queryParameters,
-    connectTimeout: connectTimeout,
-    receiveTimeout: receiveTimeout,
-    sendTimeout: sendTimeout,
-    extra: extra,
-    headers: headers,
-    contentType: contentType,
-    validateStatus: validateStatus,
-    receiveDataWhenStatusError: receiveDataWhenStatusError,
-    followRedirects: followRedirects,
-    maxRedirects: maxRedirects,
-  );
 }
 
 void _logger(Object object) {
@@ -229,9 +222,13 @@ void _logger(Object object) {
 }
 
 MediaType parseMediaType(File file) {
-  if (file.path.isEmpty) return MediaType('application', 'octet-stream');
+  if (file.path.isEmpty) {
+    return MediaType('application', 'octet-stream');
+  }
   var extensionIndex = file.path.lastIndexOf('.');
-  if (extensionIndex == -1 || extensionIndex == file.path.length - 1) return MediaType('application', 'octet-stream');
+  if (extensionIndex == -1 || extensionIndex == file.path.length - 1) {
+    return MediaType('application', 'octet-stream');
+  }
   var extension = file.path.substring(extensionIndex + 1).toLowerCase();
 
   MediaType? mediaType;
